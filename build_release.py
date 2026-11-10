@@ -15,7 +15,7 @@ from pathlib import Path
 
 root = Path(__file__).resolve().parent
 version = tomllib.loads((root / 'pyproject.toml').read_text(encoding='utf8'))['project']['version']
-release_date = (2026, 11, 10, 0, 0, 0)
+release_date = (2026, 11, 11, 0, 0, 0)
 test_proof = root / 'dist' / 'test-results.txt'
 if not test_proof.is_file():
     raise SystemExit('Run pytest and save its stdout to dist/test-results.txt before building')
@@ -70,7 +70,7 @@ manifest={
     'schema':'aiwallet.release-evidence/v1',
     'product':'AIWallet Release Lab',
     'version':version,
-    'publish_date':'2026-11-10',
+    'publish_date':'2026-11-11',
     'code_license':'Apache-2.0',
     'verified_local_tests':tests_passed,
     'test_evidence_sha256':hashlib.sha256(test_proof.read_bytes()).hexdigest(),

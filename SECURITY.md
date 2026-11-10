@@ -12,3 +12,7 @@ Release Lab 0.6 is a **local, single-user application**. Do not expose the FastA
 Watch mode processes only changed, stable, regular video files; it saves current status atomically and skips symlinks. **Do not share report directories** (report names and media SHA-256 are sensitive client metadata). There is no built-in report retention policy; review old reports manually.
 
 Please report suspected vulnerabilities **privately** to `muhammadzakyasshidqy@gmail.com` with `SECURITY: AIWallet Release Lab` in the subject. Do not publish exploit details before a fix.
+
+## Human review trust boundary (v0.7)
+
+Local editorial approval stores an unverified reviewer name and answers in SQLite. Neither the dashboard nor CLI authenticates the reviewer or signs the approval; do not use it for legal, regulatory or external provenance. The gate checks exact video SHA-256 and ruleset only. The local app must remain bound to loopback and must not be published on the internet.

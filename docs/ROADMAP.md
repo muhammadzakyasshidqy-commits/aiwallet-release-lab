@@ -73,3 +73,12 @@ All items unchecked are *not yet implemented*.
 - [x] Atomic local JSON/HTML/CSV results, restart-safe resumability, one-shot mode for scheduled tasks.
 - [x] Symlink and input/output safety; bounded file count and CLI intervals.
 - [ ] Real external beta testers, Windows/macOS validation, GitHub repo/Actions, paying SaaS.
+
+## v0.7 shipped — editorial evidence
+
+- [x] Five-field human editorial review with free-form revision notes.
+- [x] Review bound to source SHA-256 and technical ruleset.
+- [x] Optional CLI gate blocks missing/changed/rejected review.
+- [x] Local SQLite review history and downloadable JSON for review handoff.
+- [ ] Authenticated reviewer identity and tamper-evident signatures (not yet shipped).
+- [ ] Independently validated visual/subtitle quality detection (not yet shipped).

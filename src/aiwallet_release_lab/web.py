@@ -9,15 +9,17 @@ import sqlite3
 import tempfile
 import uuid
 from contextlib import asynccontextmanager
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, File, HTTPException, UploadFile, Request
+from fastapi import FastAPI, File, HTTPException, UploadFile, Request, Body
 from fastapi.responses import FileResponse, HTMLResponse, Response
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from .report import render_html
 from .markers import extract_markers, markers_csv
+from .editorial import create_review
 from fastapi.staticfiles import StaticFiles
 
 from . import __version__
@@ -33,10 +35,16 @@ class Store:
             db.execute("""CREATE TABLE IF NOT EXISTS reports(
                 id TEXT PRIMARY KEY, created_at TEXT NOT NULL, name TEXT NOT NULL,
                 status TEXT NOT NULL, payload TEXT NOT NULL)""")
+            db.execute("""CREATE TABLE IF NOT EXISTS editorial_reviews(
+                report_id TEXT NOT NULL, revision INTEGER NOT NULL,
+                created_at TEXT NOT NULL, payload TEXT NOT NULL,
+                PRIMARY KEY(report_id, revision),
+                FOREIGN KEY(report_id) REFERENCES reports(id) ON DELETE CASCADE)""")
 
     def connect(self):
         db = sqlite3.connect(self.db, timeout=15)
         db.row_factory = sqlite3.Row
+        db.execute("PRAGMA foreign_keys = ON")
         return db
 
     def add(self, id_: str, report: dict[str, Any]):
@@ -55,6 +63,22 @@ class Store:
             rows = db.execute("SELECT id,created_at,name,status,payload FROM reports ORDER BY created_at DESC LIMIT ?", (limit,)).fetchall()
         return [{"id": row["id"], "created_at": row["created_at"], "name": row["name"],
                  "status": row["status"], "summary": json.loads(row["payload"])["summary"]} for row in rows]
+
+    def latest_review(self, report_id: str) -> dict[str, Any] | None:
+        with self.connect() as db:
+            row = db.execute("SELECT revision,payload FROM editorial_reviews WHERE report_id=? "
+                             "ORDER BY revision DESC LIMIT 1", (report_id,)).fetchone()
+        return {"revision": row["revision"], "review": json.loads(row["payload"])} if row else None
+
+    def add_review(self, report_id: str, review: dict[str, Any]) -> int:
+        with self.connect() as db:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute("SELECT COALESCE(MAX(revision),0)+1 FROM editorial_reviews WHERE report_id=?",
+                             (report_id,)).fetchone()
+            rev = int(row[0])
+            db.execute("INSERT INTO editorial_reviews(report_id,revision,created_at,payload) VALUES(?,?,?,?)",
+                       (report_id, rev, review["created_at"], json.dumps(review,ensure_ascii=False)))
+        return rev
 
     def delete(self, id_: str) -> bool:
         with self.connect() as db:
@@ -117,6 +141,40 @@ def create_app(data_dir: Path | None = None, *, max_bytes: int = MAX_FILE_BYTES)
         if data is None:
             raise HTTPException(404, "Report not found")
         return data
+
+    @api.get("/api/reports/{id_}/review")
+    def get_editorial_review(id_: str):
+        if not re.fullmatch(r"[0-9a-f]{32}", id_) or store.get(id_) is None:
+            raise HTTPException(404, "Report not found")
+        return {"latest": store.latest_review(id_)}
+
+    @api.get("/api/reports/{id_}/review.json")
+    def export_editorial_review(id_: str):
+        if not re.fullmatch(r"[0-9a-f]{32}", id_) or store.get(id_) is None:
+            raise HTTPException(404, "Report not found")
+        latest = store.latest_review(id_)
+        if latest is None:
+            raise HTTPException(404, "Editorial review not found")
+        return Response(json.dumps(latest["review"],indent=2,ensure_ascii=False)+"\n",
+                        media_type="application/json; charset=utf-8",
+                        headers={"Content-Disposition":"attachment; filename=editorial-review.json",
+                                 "Cache-Control":"private, no-store"})
+
+    @api.post("/api/reports/{id_}/review", status_code=201)
+    def submit_editorial_review(id_: str, payload: dict[str, Any] = Body(...)):
+        if not re.fullmatch(r"[0-9a-f]{32}", id_):
+            raise HTTPException(404, "Report not found")
+        report = store.get(id_)
+        if report is None:
+            raise HTTPException(404, "Report not found")
+        try:
+            review = create_review(report, reviewer=payload.get("reviewer"),
+                                   criteria=payload.get("criteria"),notes=payload.get("notes", ""))
+        except AuditError as exc:
+            raise HTTPException(422, str(exc)) from exc
+        revision = store.add_review(id_,review)
+        return {"revision":revision,"review":review,
+                "notice":"Unverified human self-attestation. Technical PASS alone is not creative approval."}
 
     @api.get("/api/reports/{id_}/poster")
     def get_poster(id_: str):

@@ -24,3 +24,21 @@
 .watch-console p{border-top:1px solid #39604a;margin:0;padding:15px 24px;color:#a5bdac;font-size:12px;line-height:1.5}
 @media(max-width:830px){.watch-split{grid-template-columns:1fr;gap:38px}.watch-console{box-shadow:8px 10px 0 #c9d9be}}
 @media(prefers-reduced-motion:reduce){.watch-led{box-shadow:none}}
+
+/* v0.7 editorial quality, explicitly separate from machine QC. */
+.editorial-product{background:#e5eddf;border-top:1px solid #bdcabb}
+.editorial-dual{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.95fr);gap:clamp(26px,5vw,95px);align-items:center;padding-top:34px}
+.editorial-copy h2{font-size:clamp(42px,5.3vw,75px);line-height:1.06;letter-spacing:-.064em;margin:0 0 25px;color:#172e22}
+.editorial-copy h2 span{color:#49734b}.editorial-copy h2 em{font-family:Georgia,serif;font-weight:400;color:#36644b}
+.editorial-copy p{max-width:590px;color:#4c5e50;font-size:15px;line-height:1.76}
+.review-instrument{background:#173225;border:1px solid #2d5942;color:#e7f3e6;box-shadow:16px 15px 0 #c3d2b9}
+.review-instrument-head{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #355a45;padding:20px 22px;color:#b3d1b2;font:750 10px/1.5 ui-monospace,monospace;letter-spacing:.08em}
+.review-instrument-row{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:26px 22px;border-bottom:1px solid #355a45}
+.review-instrument-row div{display:grid;gap:8px}.review-instrument-row small{font:700 11px ui-monospace,monospace;color:#97ad9b}
+.review-instrument-row strong{font-size:21px;letter-spacing:-.025em}.review-instrument-row div span{font-size:12px;color:#a2b9a7}
+.review-instrument-row b{font:850 12px ui-monospace,monospace;letter-spacing:.08em;border:1px solid currentColor;padding:11px 12px}
+.review-pass{color:#b9ff7a}.review-revise{color:#ffca99}
+.review-instrument-bottom{padding:26px 22px;background:#254734}.review-instrument-bottom>span{display:block;font:700 11px ui-monospace,monospace;color:#b0d4b8}
+.review-instrument-bottom strong{display:block;color:#fff;font-size:32px;letter-spacing:-.055em;margin:7px 0 11px}
+.review-instrument-bottom p{font-size:11px;line-height:1.6;color:#bed2c0;margin:0}
+@media(max-width:850px){.editorial-dual{grid-template-columns:1fr}.review-instrument{box-shadow:8px 9px 0 #c3d2b9}}

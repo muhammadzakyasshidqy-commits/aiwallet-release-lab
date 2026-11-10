@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.7.0 — 2026-11-11
+
+- Added explicit human editorial review separate from automated technical QC.
+- Five manually scored criteria, revision notes, source SHA-256 binding and local review history.
+- Optional CLI `--editorial-review` policy requiring a matching approved human review, fail-closed on stale/missing JSON.
+- Local dashboard can save and export revisions; no reviewer authentication or cryptographic signature implied.
+- Added adversarial gate and API tests; corrected stale local UI release label.
+- The open-source core remains free; managed subscriptions and GitHub-native CI are not claimed live.
+
 ## 0.6.0 — 2026-11-10
 
 - Local-only `releaselab watch` for stable new render exports and in-place revisions.

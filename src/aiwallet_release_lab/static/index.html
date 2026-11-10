@@ -24,7 +24,7 @@
 <main>
 <section class="hero" id="top" aria-labelledby="hero-title">
   <div class="hero-copy">
-    <p class="eyebrow"><span class="live-dot"></span> Open source · Offline-first · Rilis 0.1</p>
+    <p class="eyebrow"><span class="live-dot"></span> Open source · Offline-first · Rilis 0.7</p>
     <h1 id="hero-title">Video sudah jadi.<br><em>Sudah siap tayang?</em></h1>
     <p class="hero-lead">Jangan tebak kualitas teknis sebelum upload. AIWallet memeriksa rasio, resolusi, codec, audio, bagian hitam, dan frame diam. Laporan jelas, dengan bukti yang bisa disimpan.</p>
     <div class="hero-actions"><a class="primary-action" href="#lab">Periksa video gratis <span>↗</span></a><a class="subtle-action" href="#workflow">Lihat cara kerja <span aria-hidden="true">↘</span></a></div>
@@ -56,7 +56,22 @@
     <div class="result-panel" id="result-panel">
       <div class="result-head"><span>OUTPUT / TEKNIS</span><span id="result-badge" class="result-badge">NO RUN YET</span></div>
       <div id="empty-results" class="result-empty"><div class="scan-graphic"><div class="scan-lines"></div><div class="scan-cross">+</div></div><p class="result-empty-title">Menunggu pemeriksaan pertama</p><p>Setelah analisis, temuan teknis dan tindakan yang disarankan muncul di sini. Bukan skor viralitas.</p></div>
-      <div id="full-results" hidden><div class="result-overview"><div id="result-poster" class="result-poster"></div><div><p class="eyebrow">FILE TERPERIKSA</p><h3 id="result-filename"></h3><p id="result-meta" class="muted"></p><div id="result-score" class="result-score"></div></div></div><div class="result-checks" id="result-checks"></div><section id="result-timeline" class="marker-panel" aria-label="Temuan bertanda waktu"><h4>Issue timeline / timecoded evidence</h4><p id="marker-coverage" class="muted"></p><ol id="marker-list" class="marker-list"></ol></section><div class="result-actions"><a id="download-json" download="audit.json" href="#">Unduh JSON <span>↗</span></a><a id="download-markers" download="release-markers.csv" href="#">CSV timecode <span>↗</span></a><a id="download-html" download="audit.html" href="#">Laporan HTML <span>↗</span></a></div><div class="result-notice">Hasil adalah pemeriksaan teknis heuristik; editor tetap perlu menilai cerita, hak cipta, caption, dan hasil visual secara manual.</div></div>
+      <div id="full-results" hidden><div class="result-overview"><div id="result-poster" class="result-poster"></div><div><p class="eyebrow">FILE TERPERIKSA</p><h3 id="result-filename"></h3><p id="result-meta" class="muted"></p><div id="result-score" class="result-score"></div></div></div><div class="result-checks" id="result-checks"></div><section id="result-timeline" class="marker-panel" aria-label="Temuan bertanda waktu"><h4>Issue timeline / timecoded evidence</h4><p id="marker-coverage" class="muted"></p><ol id="marker-list" class="marker-list"></ol></section><section id="editorial-section" class="editorial-panel" aria-labelledby="editorial-title">
+<h4 id="editorial-title">Creative review / persetujuan manusia</h4>
+<p>FFmpeg tidak menilai kualitas cerita, humor, pacing, atau estetika. Review ini harus diisi manusia. Nama reviewer belum diautentikasi, dan bukan tanda tangan digital.</p>
+<p id="editorial-state" class="editorial-state" role="status" aria-live="polite">Belum direview.</p>
+<form id="editorial-form"><label>Nama reviewer (diisi sendiri)<input type="text" name="reviewer" required minlength="2" maxlength="100" placeholder="Nama reviewer"></label>
+<div class="editorial-grid">
+<label>Hook / cerita<select name="story_hook" required><option value="">Pilih</option><option value="pass">Sudah layak</option><option value="changes_requested">Perlu revisi</option><option value="not_applicable">Tidak berlaku</option></select></label>
+<label>Visual & keterbacaan<select name="visual_clarity" required><option value="">Pilih</option><option value="pass">Sudah layak</option><option value="changes_requested">Perlu revisi</option><option value="not_applicable">Tidak berlaku</option></select></label>
+<label>Ritme / pacing<select name="pacing" required><option value="">Pilih</option><option value="pass">Sudah layak</option><option value="changes_requested">Perlu revisi</option><option value="not_applicable">Tidak berlaku</option></select></label>
+<label>Suara & mixing<select name="sound_design" required><option value="">Pilih</option><option value="pass">Sudah layak</option><option value="changes_requested">Perlu revisi</option><option value="not_applicable">Tidak berlaku</option></select></label>
+<label>Akurasi brand / pesan<select name="brand_accuracy" required><option value="">Pilih</option><option value="pass">Sudah layak</option><option value="changes_requested">Perlu revisi</option><option value="not_applicable">Tidak berlaku</option></select></label>
+</div>
+<label>Catatan revisi<textarea name="notes" maxlength="2400" rows="3" placeholder="Mis. hook masih lambat; karakter kurang terbaca pada detik 0–3"></textarea></label>
+<div class="editorial-actions"><button id="editorial-save" type="submit">Simpan review lokal</button><a id="download-editorial" href="#" download="editorial-review.json" hidden>Unduh review JSON ↗</a></div>
+</form></section>
+<div class="result-actions"><a id="download-json" download="audit.json" href="#">Unduh JSON <span>↗</span></a><a id="download-markers" download="release-markers.csv" href="#">CSV timecode <span>↗</span></a><a id="download-html" download="audit.html" href="#">Laporan HTML <span>↗</span></a></div><div class="result-notice">Hasil adalah pemeriksaan teknis heuristik; editor tetap perlu menilai cerita, hak cipta, caption, dan hasil visual secara manual.</div></div>
     </div>
   </div>
   <div class="history-heading"><h3>Riwayat lokal</h3><span id="history-count">0 REPORTS</span></div><div id="history" class="history"><p class="empty-history">Belum ada laporan di perangkat ini.</p></div>
@@ -90,6 +105,6 @@
   </form></dialog>
 <section class="closing"><span class="eyebrow">KEEP THE CREATIVE WORK. CHECK THE TECHNICAL PART.</span><h2>Jangan tebak.<br><em>Periksa.</em></h2><a href="#lab">Audit video pertama <span>↗</span></a></section>
 </main>
-<footer><div class="footer-brand">a.<span> AIWALLET / RELEASE LAB</span></div><div><span>Apache-2.0 · Local-first · v0.1</span><span>Bukan aplikasi resmi Instagram, TikTok, atau YouTube.</span></div><a href="mailto:muhammadzakyasshidqy@gmail.com">Kontak ↗</a></footer>
+<footer><div class="footer-brand">a.<span> AIWALLET / RELEASE LAB</span></div><div><span>Apache-2.0 · Local-first · v0.7</span><span>Bukan aplikasi resmi Instagram, TikTok, atau YouTube.</span></div><a href="mailto:muhammadzakyasshidqy@gmail.com">Kontak ↗</a></footer>
 </div>
 </body></html>

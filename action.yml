@@ -20,6 +20,10 @@ inputs:
     description: 'Optional checked-in JSON studio policy path'
     required: false
     default: ''
+  editorial-review:
+    description: "Optional reviewer JSON bound to the exact source SHA-256; must be approved to pass"
+    required: false
+    default: ""
 runs:
   using: 'composite'
   steps:
@@ -39,8 +43,10 @@ runs:
         RELEASE_FAIL_ON: ${{ inputs.fail-on }}
         RELEASE_QUICK: ${{ inputs.quick }}
         RELEASE_POLICY: ${{ inputs.policy }}
+        RELEASE_EDITORIAL_REVIEW: ${{ inputs.editorial-review }}
       run: |
         args=(gate "$RELEASE_INPUT_VIDEO" --fail-on "$RELEASE_FAIL_ON")
         if [ "$RELEASE_QUICK" = 'true' ]; then args+=(--quick); fi
         if [ -n "$RELEASE_POLICY" ]; then args+=(--policy "$RELEASE_POLICY"); fi
+        if [ -n "$RELEASE_EDITORIAL_REVIEW" ]; then args+=(--editorial-review "$RELEASE_EDITORIAL_REVIEW"); fi
         releaselab "${args[@]}"

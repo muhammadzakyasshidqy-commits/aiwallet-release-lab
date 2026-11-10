@@ -34,6 +34,7 @@ function showReport(id,result,poster){current={id,result};$('empty-results').hid
  if(!raw.length)timeline.append(node('li','','Tidak ada segmen terdeteksi. Ini bukan bukti bebas masalah jika scan tidak lengkap.'));
  setText('marker-coverage',(measure.analysis_seconds||0)+'s dianalisis dari '+result.metadata.duration_seconds+'s. '+(measure.limited_scan?'SCAN TERBATAS':'Scan hasil detektor tersedia; interpretasi tetap diperlukan.'));
  $('download-markers').href='/api/reports/'+id+'/markers.csv';
+ loadEditorialReview(id);
  $('download-html').href='/api/reports/'+id+'/html';$('result-panel').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest'});
 }
 async function history(){try{const res=await fetch('/api/reports',{cache:'no-store'});if(!res.ok)throw new Error('History unavailable');const data=await res.json();const items=data.reports||[];setText('history-count',items.length+' REPORTS');const box=$('history');box.replaceChildren();if(!items.length){box.append(node('p','empty-history','Belum ada laporan di perangkat ini.'));return}
@@ -59,4 +60,44 @@ waitForm.addEventListener('submit',async event=>{
   if(!res.ok||!out.ok)throw new Error(out.message||'Layanan pencatatan minat belum tersedia.');
   waitStatus.textContent='Minatmu tercatat. Tidak ada penagihan atau langganan aktif.';waitForm.reset();
  }catch(err){waitStatus.textContent=err.message||'Pengiriman gagal. Hubungi kontak AIWallet.';}finally{send.disabled=false}
+});
+
+// Human creative approval is NOT inferred from technical QC. All content stays local.
+const editorialForm=$('editorial-form'), editorialState=$('editorial-state'), editorialDownload=$('download-editorial');
+const reviewFields=['story_hook','visual_clarity','pacing','sound_design','brand_accuracy'];
+async function loadEditorialReview(id){
+  editorialState.textContent='Memuat review manusia…';editorialDownload.hidden=true;
+  editorialForm.reset();
+  try{
+    const r=await fetch('/api/reports/'+id+'/review',{cache:'no-store'});
+    if(!r.ok)throw new Error('Review lokal tidak dapat dibaca');
+    const data=await r.json();
+    if(current?.id!==id)return;
+    const info=data.latest;
+    if(!info){editorialState.textContent='Belum dinilai manusia. PASS teknis ≠ kualitas kreatif.';return;}
+    const review=info.review;
+    editorialForm.elements.namedItem('reviewer').value=review.reviewer;
+    editorialForm.elements.namedItem('notes').value=review.notes||'';
+    for(const key of reviewFields){const item=editorialForm.elements.namedItem(key);if(item)item.value=review.criteria[key]||''}
+    editorialState.textContent=(review.outcome==='approved'?'Review manual: disetujui':'Review manual: minta revisi')+' · rev. '+info.revision+' · reviewer tidak diautentikasi.';
+    editorialDownload.hidden=false;editorialDownload.href='/api/reports/'+id+'/review.json';
+  }catch(e){if(current?.id===id)editorialState.textContent=e.message||'Review lokal tidak tersedia.'}
+}
+editorialForm.addEventListener('submit',async ev=>{
+  ev.preventDefault();if(!current?.id||!editorialForm.reportValidity())return;
+  const btn=$('editorial-save');btn.disabled=true;
+  editorialState.textContent='Menyimpan review lokal…';
+  try{
+    const data=new FormData(editorialForm);
+    const criteria={};for(const field of reviewFields)criteria[field]=String(data.get(field)||'');
+    const payload={reviewer:String(data.get('reviewer')||''),notes:String(data.get('notes')||''),criteria};
+    const id=current.id;
+    const r=await fetch('/api/reports/'+id+'/review',{
+      method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)
+    });
+    let result={};try{result=await r.json()}catch{}
+    if(!r.ok)throw new Error(result.detail||'Review tidak bisa disimpan.');
+    if(current?.id===id)await loadEditorialReview(id);
+  }catch(err){editorialState.textContent=err.message||'Gagal menyimpan review.';}
+  finally{btn.disabled=false;}
 });

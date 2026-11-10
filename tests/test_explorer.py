@@ -44,6 +44,8 @@ def test_marketing_site_links_to_explorer_and_source():
     root=Path(__file__).parents[1]/'site'
     source=(root/'index.html').read_text('utf8')
     assert 'tools/receipt-explorer.html' in source
-    assert 'aiwallet-release-lab-v0.6.0.zip' in source
+    import tomllib
+    version = tomllib.loads((root.parent/'pyproject.toml').read_text('utf8'))['project']['version']
+    assert f'aiwallet-release-lab-v{version}.zip' in source
     assert '0.4.0' not in source
     assert (root/'demo/issue-markers.csv').exists()

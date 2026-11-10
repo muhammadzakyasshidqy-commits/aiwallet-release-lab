@@ -39,3 +39,13 @@ Shows width/height/FPS/duration deltas, changed rule statuses, regression count 
 Run `releaselab watch ./exports --output ./qc-live --stable-seconds 3` to inspect new/revised local renders after the file signature stays unchanged. The current queue updates in `qc-live/index.html` and `state.json`. `--once` exits for cron/Task Scheduler or post-render hooks. Do not place output inside watched inputs. A change invalidates a prior accepted gate immediately; this is not a signed renderer-completion signal.
 
 See [WATCH.md](WATCH.md) for options, failure semantics, and privacy caveats.
+
+## Human approval gate (v0.7)
+
+To require manual story/visual/audio review in addition to technical QC, use:
+
+```bash
+releaselab gate clip.mp4 --policy policies/studio-vertical.json --editorial-review ./qc/editorial-review.json
+```
+
+The reviewer must create `editorial-review.json` by evaluating the exact version of the media. A stale file hash, missing JSON, inconsistent verdict or requested revision returns exit code 3. This **does not authenticate a reviewer**. The checked-in GitHub composite Action supports an optional `editorial-review` input.

@@ -4,13 +4,14 @@
 
 A creator can make a beautiful video and still upload an accidental 16:9 export, a silent file, an over-loud mix, an unsupported codec or a long unintended freeze. Release Lab inspects the *technical* side of a video, explains its findings, and produces a portable QA report. It does **not** generate views, rate creativity, scrape social networks, or publish on behalf of an account.
 
-**Status:** v0.6.0 alpha · Core available · Early-access interest form live · Hosted subscription and recurring checkout are not yet available.
+**Status:** v0.7.0 alpha · Core available · Early-access interest form live · Hosted subscription and recurring checkout are not yet available.
 
 ## What runs today
 
 - Local CLI + responsive browser-based workbench.
 - Optional self-contained Python **zipapp** for CLI usage on systems with Python + FFmpeg; the browser dashboard still requires FastAPI and Uvicorn.
 - **Batch export audit, CI release gate, revision comparisons**, timecoded CSV markers, and reports suitable for an editor/publisher handoff.
+- **Separate human creative review** (story/hook, visual clarity, pacing, sound, brand accuracy) with local-only revision history, source-SHA binding, and optional CI blocking. Technical PASS never means editorial approval.
 - Real FFprobe metadata: width, height, ratio, codec, FPS, duration, audio, interlacing.
 - Bounded FFmpeg scans: integrated loudness and true peak, black frames, frozen sections and audio silence with timecodes.
 - Detailed PASS / CHECK findings with caveats instead of an unexplained AI score.
@@ -23,12 +24,12 @@ A creator can make a beautiful video and still upload an accidental 16:9 export,
 
 ### Run without installing Python packages (CLI only)
 
-If you have Python 3.11+ and FFmpeg, use the portable `releaselab-0.6.0.pyz` artifact:
+If you have Python 3.11+ and FFmpeg, use the portable `releaselab-0.7.0.pyz` artifact:
 
 ```bash
-python releaselab-0.6.0.pyz doctor
-python releaselab-0.6.0.pyz audit video.mp4 --output ./report
-python releaselab-0.6.0.pyz batch ./exports --quick
+python releaselab-0.7.0.pyz doctor
+python releaselab-0.7.0.pyz audit video.mp4 --output ./report
+python releaselab-0.7.0.pyz batch ./exports --quick
 ```
 
 The packaged browser dashboard still requires `pip install -e '.[web]'` (FastAPI, Uvicorn); zipapp is intentionally a dependency-free CLI only.
@@ -112,6 +113,27 @@ releaselab markers ./report/audit.json --format json --output ./review-markers.j
 The browser workbench also offers a **CSV timecode** download for each saved report. Open the [Report Explorer](site/tools/receipt-explorer.html) to load your existing `audit.json` in browser memory, inspect timecoded events and export CSV without sending that file to AIWallet. The sample button loads only the explicitly public synthetic test JSON.
 
 These are **NLE-neutral markers**, not an EDL, an SMPTE drop-frame file, or a guaranteed Premiere/Resolve marker importer. `0 events` from a quick or truncated scan never means an error-free video. This is technical evidence, not subjective video scoring.
+
+### Editorial review is a separate gate (v0.7)
+
+A video may be a perfectly valid 9:16 H.264/AAC file and still be *poorly edited*. The technical audit cannot judge hook, story, framing, subtitles, sound choice, or brand fit. In v0.7, the local dashboard has a **Human Creative Review** form with five explicitly human-rated criteria and revision notes. Review history is stored on your device, can be exported as JSON, and is bound to the exact source SHA-256. A reviewer name is self-declared: **no authentication, signature or legal sign-off is claimed**.
+
+With the CLI, generate a local review after physically watching the file:
+
+```bash
+releaselab audit video.mp4 --output ./qc
+releaselab editorial ./qc/audit.json --reviewer "Human Editor" \
+  --story-hook pass --visual-clarity pass --pacing changes_requested \
+  --sound-design pass --brand-accuracy pass --notes "Trim opening 2s" \
+  --output ./qc/editorial-review.json
+# The result above is CHANGES REQUESTED. It cannot pass editorial gate.
+
+releaselab gate video.mp4 --policy policies/studio-vertical.json \
+  --editorial-review ./qc/editorial-review.json --fail-on none
+# Exit 3 until BOTH technical policy and human review pass for these video bytes.
+```
+
+The editorial command never assesses the creative result itself; it records the person's decisions. Editing the source file invalidates an earlier approval. A missing, unreadable, or inconsistent review blocks only when `--editorial-review` is supplied. See `docs/EDITORIAL_REVIEW.md`.
 
 ### A release policy for CI
 

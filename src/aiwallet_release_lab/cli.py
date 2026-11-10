@@ -13,6 +13,7 @@ from .workflow import audit_batch, compare_reports, gate_report, verify_receipt
 from .markers import markers_from_file, markers_csv
 from .policy import read_policy
 from .watch import WatchSession, run_watch
+from .editorial import CRITERIA, RESPONSES, create_review, review_gate, read_review
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -29,6 +30,7 @@ def main(argv: list[str] | None = None) -> int:
     gate.add_argument("--fail-on", choices=("warn", "fail", "none"), default="warn")
     gate.add_argument("--output", "-o", help="Opsional: simpan laporan lengkap")
     gate.add_argument("--policy", help="Policy JSON lokal yang fail-closed untuk studio/CI")
+    gate.add_argument("--editorial-review", help="Wajibkan review manual terikat hash sumber; tanpa review, gate kreatif tidak aktif")
     batch = sub.add_parser("batch", help="QC banyak video dan ekspor manifest+CSV+HTML")
     batch.add_argument("folder")
     batch.add_argument("--output", "-o", default="./release-batch")
@@ -57,6 +59,13 @@ def main(argv: list[str] | None = None) -> int:
     markers.add_argument("receipt", help="audit.json dari Release Lab")
     markers.add_argument("--output", "-o", help="Opsional: path CSV/JSON, atau stdout jika tidak ada")
     markers.add_argument("--format", choices=("csv", "json"), default="csv")
+    editorial = sub.add_parser("editorial", help="Catat pemeriksaan kreatif manual dari receipt JSON; bukan skor AI")
+    editorial.add_argument("receipt", help="Path audit.json dari QC video sebelumnya")
+    editorial.add_argument("--reviewer", required=True, help="Nama reviewer (diisi sendiri, tanpa verifikasi identitas)")
+    for flag in CRITERIA:
+        editorial.add_argument("--"+flag.replace("_", "-"), required=True, choices=RESPONSES)
+    editorial.add_argument("--notes", default="", help="Catatan ke editor, maksimum 2400 karakter")
+    editorial.add_argument("--output", "-o", default="./editorial-review.json", help="Berkas editorial-review.json")
     verify = sub.add_parser("verify", help="Uji ulang receipt JSON terhadap video asli")
     verify.add_argument("video")
     verify.add_argument("report")
@@ -87,6 +96,23 @@ def main(argv: list[str] | None = None) -> int:
                                    max_files=args.max_files)
             run_watch(session, poll_interval=args.poll_interval, max_cycles=1 if args.once else None)
             return 0 if session.records and all(row["gate_passed"] for row in session.records.values()) else 3
+        if args.command == "editorial":
+            receipt = Path(args.receipt)
+            if receipt.is_symlink() or not receipt.is_file() or receipt.stat().st_size > 1024*1024:
+                raise AuditError("Receipt QC tidak ada atau melebihi 1 MiB.")
+            try:
+                source = json.loads(receipt.read_text(encoding="utf-8"))
+            except (ValueError, UnicodeError) as exc:
+                raise AuditError("Receipt QC JSON tidak dapat dibaca.") from exc
+            answers = {field: getattr(args, field) for field in CRITERIA}
+            output = create_review(source, reviewer=args.reviewer, criteria=answers, notes=args.notes)
+            dest = Path(args.output)
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            dest.write_text(json.dumps(output, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
+            print(json.dumps({"status":output["outcome"], "file":str(dest),
+                              "source_sha256":output["file_sha256"],
+                              "identity_verified":False}, ensure_ascii=False))
+            return 0 if output["outcome"] == "approved" else 3
         if args.command == "verify":
             verification = verify_receipt(args.video, args.report,
                                           policy=read_policy(args.policy) if args.policy else None)
@@ -127,6 +153,19 @@ def main(argv: list[str] | None = None) -> int:
         data = audit_video(args.video, quick=args.quick, scan_limits=limits)
         if args.command == "gate":
             verdict = gate_report(data, fail_on=args.fail_on, policy=policy)
+            if args.editorial_review:
+                try:
+                    editorial_data = read_review(args.editorial_review)
+                    review_result = review_gate(data, editorial_data)
+                except (AuditError, OSError) as exc:
+                    review_result = {"schema":"aiwallet.editorial-gate/v1", "passed":False,
+                                     "blocking_check_codes":["review:missing_or_unreadable"],
+                                     "reviewer_identity_verified":False,
+                                     "disclaimer":"The editorial review could not be read; release blocked."}
+                verdict["editorial_gate"] = review_result
+                if not review_result["passed"]:
+                    verdict["passed"] = False
+                    verdict["blocking_check_codes"].extend(review_result["blocking_check_codes"])
             if args.output:
                 destination = Path(args.output)
                 poster = destination / "poster.jpg"
