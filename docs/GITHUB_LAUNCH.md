@@ -8,7 +8,7 @@
 2. Extract this ZIP into the new repository's root (not one nested directory).
 3. Run `python -m pip install -e '.[web,dev]' && pytest -q && releaselab doctor` with FFmpeg installed.
 4. Set repository About/Topics based on what genuinely ships (`ffmpeg`, `video-qc`, `reels`, `shorts`, `local-first`, `open-source`); attach a screenshot of the real demo and the sample report.
-5. Publish a semver `v0.3.0` release containing the source archive and a SHA-256 checksum. Do not represent a ZIP upload as GitHub source control.
+5. Publish a semver `v0.4.0` release containing the source archive and a SHA-256 checksum. Do not represent a ZIP upload as GitHub source control.
 6. Enable Issues, Discussions, Security Policy, Dependabot, and Actions CI. Verify CI runs on multiple supported Python versions before advertising it as green.
 7. Add the repository URL and the real release asset URL to the website **after** they exist.
 

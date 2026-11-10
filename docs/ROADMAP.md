@@ -42,3 +42,14 @@ All items unchecked are *not yet implemented*.
 - GitHub repository publication and independently verified Actions runs.
 - Multi-tenant hosted SaaS, recurring billing, cancellation lifecycle and paid entitlements.
 - Measured weekly active users, real customers and recurring revenue.
+
+
+## v0.4 delivered — 10 November 2026
+
+- [x] Adaptive detector sensitivity for studio policy thresholds.
+- [x] Fail closed on missing precision or truncated timeline evidence.
+- [x] `releaselab verify` checks source SHA-256, ruleset/version, metadata and all technical measurements by re-running FFmpeg.
+- [x] 54 automated tests on Python 3.13/Linux, including real FFmpeg short-event fixtures.
+- [ ] GitHub source publishing and Actions verification (connector write access blocked).
+- [ ] Paid hosted tier, recurring billing, entitlement management (not shipped or charged).
+- [ ] Verified user traction and independent adoption.

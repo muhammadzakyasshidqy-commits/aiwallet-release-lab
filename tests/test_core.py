@@ -22,7 +22,7 @@ def test_deterministic_checks_and_hash(sample_video):
     report = audit_video(sample_video, quick=True)
     assert report["file"]["sha256"] == sha256(sample_video)
     assert report["summary"]["status"] in {"pass", "warn"}
-    assert report["ruleset"] == "reels-qc-2026.11.2"
+    assert report["ruleset"] == "reels-qc-2026.11.4"
     assert {c["code"] for c in report["checks"]} >= {"geometry", "codec", "fps", "duration", "audio"}
     assert sum(report["summary"][k] for k in ["passed", "warnings", "failed"]) == len(report["checks"])
 

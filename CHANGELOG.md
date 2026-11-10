@@ -1,3 +1,12 @@
+## 0.4.0 — 2026-11-10
+
+- Policy-adaptive black/freeze/silence detector thresholds, recorded in each receipt.
+- Fail-closed policy when events are below detector precision or an event list was truncated.
+- `releaselab verify` re-scans media to validate evidence; it is not a cryptographic signature.
+- Receipt HTML shows exact scan coverage and filter sensitivity.
+- Adversarial real-FFmpeg regression tests for sub-default black, freeze and silence events.
+- No automatic charges, remote video uploads, or fabricated customer claims.
+
 # Changelog
 
 ## 0.3.0 — 2026-11-10

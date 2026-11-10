@@ -10,7 +10,7 @@ import math
 from pathlib import Path
 from typing import Any
 
-from .core import AuditError
+from .core import AuditError, DEFAULT_DETECTOR_SECONDS
 
 SCHEMA = "aiwallet.release-policy/v1"
 NUMERIC = {
@@ -124,6 +124,17 @@ def evaluate_policy(report: dict[str, Any], policy: dict[str, Any]) -> list[dict
             continue
         if coverage <= 0:
             block(key, None, "scan required")
+            continue
+        detectors = measurements.get("detector_min_duration_seconds") or DEFAULT_DETECTOR_SECONDS
+        min_detectable = detectors.get(field, DEFAULT_DETECTOR_SECONDS[field])
+        # Historical reports and quick scans may omit detector precision.
+        # A threshold below the detector sensitivity cannot yield proof of PASS.
+        if p[key] < min_detectable:
+            block(key, {"detector_min_duration_seconds": min_detectable},
+                  f"detection sensitivity <= policy maximum {p[key]}")
+            continue
+        if field in (measurements.get("truncated_sections") or []):
+            block(key, "events_truncated", "full event set required")
             continue
         segments = measurements.get(field)
         if segments is None:

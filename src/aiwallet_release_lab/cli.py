@@ -9,7 +9,7 @@ from pathlib import Path
 from .core import AuditError, audit_video, make_poster, _binary
 from . import __version__
 from .report import save_report
-from .workflow import audit_batch, compare_reports, gate_report
+from .workflow import audit_batch, compare_reports, gate_report, verify_receipt
 from .policy import read_policy
 
 
@@ -40,6 +40,10 @@ def main(argv: list[str] | None = None) -> int:
     compare.add_argument("after")
     compare.add_argument("--quick", action="store_true")
     compare.add_argument("--output", "-o")
+    verify = sub.add_parser("verify", help="Uji ulang receipt JSON terhadap video asli")
+    verify.add_argument("video")
+    verify.add_argument("report")
+    verify.add_argument("--policy", help="Opsional: policy tambahan untuk audit yang diverifikasi")
     sub.add_parser("doctor", help="Periksa toolchain FFmpeg / FFprobe")
     serve = sub.add_parser("serve", help="Mulai dashboard browser lokal")
     serve.add_argument("--host", default="127.0.0.1")
@@ -58,6 +62,11 @@ def main(argv: list[str] | None = None) -> int:
                 raise AuditError("Dashboard hanya boleh di-bind ke loopback pada versi alpha ini.")
             uvicorn.run("aiwallet_release_lab.web:app", host=args.host, port=args.port, log_level="info")
             return 0
+        if args.command == "verify":
+            verification = verify_receipt(args.video, args.report,
+                                          policy=read_policy(args.policy) if args.policy else None)
+            print(json.dumps(verification, ensure_ascii=False))
+            return 0 if verification["verified"] else 3
         if args.command == "batch":
             policy = read_policy(args.policy) if args.policy else None
             manifest = audit_batch(args.folder, args.output, quick=args.quick,
@@ -74,10 +83,13 @@ def main(argv: list[str] | None = None) -> int:
                 Path(args.output).write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
             print(json.dumps(report, ensure_ascii=False))
             return 3 if report["regression_count"] else 0
-        data = audit_video(args.video, quick=args.quick)
+        policy = read_policy(args.policy) if args.command == "gate" and args.policy else None
+        limits = {field: policy[key] for key, field in (("max_black_segment_seconds", "black_segments"),
+                  ("max_freeze_segment_seconds", "freeze_segments"), ("max_silence_segment_seconds", "silence_segments"))
+                  if policy is not None and key in policy}
+        data = audit_video(args.video, quick=args.quick, scan_limits=limits)
         if args.command == "gate":
-            verdict = gate_report(data, fail_on=args.fail_on,
-                                  policy=read_policy(args.policy) if args.policy else None)
+            verdict = gate_report(data, fail_on=args.fail_on, policy=policy)
             if args.output:
                 destination = Path(args.output)
                 poster = destination / "poster.jpg"

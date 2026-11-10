@@ -12,7 +12,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from .core import ALLOWED_EXTENSIONS, AuditError, audit_video
+from .core import ALLOWED_EXTENSIONS, AuditError, audit_video, DEFAULT_DETECTOR_SECONDS, sha256, _file, RULESET, MAX_FILE_BYTES
 from .report import save_report
 from .policy import evaluate_policy, validate_policy
 
@@ -95,7 +95,10 @@ def audit_batch(folder: str | Path, destination: str | Path, *, quick: bool = Fa
         unique = hashlib.sha256(relative.encode("utf-8")).hexdigest()[:12]
         output_dir = out / "reports" / f"{_slug(p.stem)}-{unique}"
         try:
-            report = audit_video(p, quick=quick)
+            limits = {field: policy[key] for key, field in (("max_black_segment_seconds", "black_segments"),
+                      ("max_freeze_segment_seconds", "freeze_segments"), ("max_silence_segment_seconds", "silence_segments"))
+                      if policy is not None and key in policy}
+            report = audit_video(p, quick=quick, scan_limits=limits)
             report["file"]["name"] = relative
             json_path, html_path = save_report(report, output_dir)
             gate = gate_report(report, fail_on=fail_on, policy=policy)
@@ -177,3 +180,66 @@ def compare_reports(before: dict[str, Any], after: dict[str, Any]) -> dict[str, 
             "regression_count": sum(x["regression"] for x in changed),
             "metrics": metrics,
             "limitation": "Delta describes technical checks, not human creativity or distribution results."}
+
+
+def verify_receipt(video: str | Path, report_path: str | Path, *,
+                   policy: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Re-run the SAME detector settings and compare every technical observation.
+
+    This is repeatability verification, not a digital signature, media rights proof,
+    or independent verification of the report author's identity.
+    """
+    p = _file(video)
+    receipt_path = Path(report_path)
+    if receipt_path.is_symlink() or not receipt_path.is_file() or receipt_path.stat().st_size > 2 * 1024 * 1024:
+        raise AuditError("Berikan JSON receipt biasa berukuran maksimal 2 MiB.")
+    try:
+        raw = json.loads(receipt_path.read_text(encoding="utf-8"))
+    except (ValueError, UnicodeError) as exc:
+        raise AuditError("Receipt bukan JSON valid.") from exc
+    if not isinstance(raw, dict) or raw.get("schema_version") != "1.0":
+        raise AuditError("Skema receipt tidak dikenal.")
+    orig_file = raw.get("file") or {}
+    measurements = raw.get("measurements") or {}
+    if not isinstance(orig_file, dict) or not isinstance(measurements, dict):
+        raise AuditError("Struktur receipt tidak valid.")
+    reasons: list[str] = []
+    if raw.get("ruleset") != RULESET:
+        reasons.append("ruleset_mismatch")
+    from . import __version__
+    if raw.get("software_version") != __version__:
+        reasons.append("software_version_mismatch")
+    digest = sha256(p)
+    if orig_file.get("sha256") != digest:
+        reasons.append("media_hash_mismatch")
+    if orig_file.get("size_bytes") != p.stat().st_size:
+        reasons.append("media_size_mismatch")
+    quick = not bool(measurements.get("analysis_seconds"))
+    # Only rerun a current-algorithm report. Old versions cannot be silently
+    # certified as new because event detectors and policy semantics may differ.
+    if "ruleset_mismatch" not in reasons and "software_version_mismatch" not in reasons:
+        limits = {}
+        detectors = measurements.get("detector_min_duration_seconds") or {}
+        for field, default in DEFAULT_DETECTOR_SECONDS.items():
+            val = detectors.get(field, default)
+            if isinstance(val, bool) or not isinstance(val, (int, float)) or not 0.02 <= val <= default:
+                reasons.append("invalid_detector_setting:" + field)
+            else:
+                limits[field] = float(val)
+        if not any(x.startswith("invalid_detector_setting") for x in reasons):
+            fresh = audit_video(p, quick=quick, scan_limits={field: 2 * val for field, val in limits.items()})
+            # Twice the recorded filter minimum recreates the same sensitivity;
+            # audit_video itself caps the duration at the product defaults.
+            for field in ("metadata", "checks", "measurements", "summary"):
+                if fresh.get(field) != raw.get(field):
+                    reasons.append("changed_" + field)
+            if policy is not None:
+                verdict = gate_report(fresh, policy=policy, fail_on="none")
+                if not verdict["passed"]:
+                    reasons.append("policy_blocked")
+    return {"schema": "aiwallet.receipt-verification/v1", "verified": not reasons,
+            "scope": "metadata_only" if quick else "bounded_media_scan",
+            "declared_analysis_seconds": measurements.get("analysis_seconds", 0),
+            "media_sha256": digest, "report_sha256": sha256(receipt_path),
+            "reason_codes": reasons, "policy_name": policy.get("name") if policy else None,
+            "caveat": "Repeatability check, not an author signature, copyright clearance or platform certification."}

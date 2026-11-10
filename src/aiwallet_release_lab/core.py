@@ -15,10 +15,16 @@ from typing import Any
 from . import __version__
 
 ALLOWED_EXTENSIONS = {".mp4", ".mov", ".m4v", ".webm", ".mkv"}
-RULESET = "reels-qc-2026.11.2"
+RULESET = "reels-qc-2026.11.4"
 MAX_FILE_BYTES = 256 * 1024 * 1024
 MAX_DURATION_SECONDS = 30 * 60
 MIN_LENGTH_SECONDS = 1.0
+
+# The filter defaults are recorded in every report, so a custom policy cannot
+# accidentally demand more precision than the video was actually inspected at.
+DEFAULT_DETECTOR_SECONDS = {"black_segments": 0.4, "freeze_segments": 2.5, "silence_segments": 0.8}
+MIN_DETECTOR_SECONDS = 0.02
+MAX_EVENTS_PER_FILTER = 30
 
 
 class AuditError(ValueError):
@@ -126,24 +132,37 @@ def scan_loudness(p: Path, seconds: float) -> tuple[float | None, float | None]:
     return (float(levels[-1]) if levels else None, float(peaks[-1]) if peaks else None)
 
 
-def scan_black(p: Path, seconds: float) -> list[dict[str, float]]:
-    text = _run_scan(p, "blackdetect=d=0.4:pix_th=0.10", length=seconds, timeout=80)
+def scan_black(p: Path, seconds: float, *, min_duration_seconds: float = 0.4) -> list[dict[str, float]]:
+    text = _run_scan(p, f"blackdetect=d={min_duration_seconds:.4f}:pix_th=0.10", length=seconds, timeout=80)
     pattern = r"black_start:([-\d.]+)\s+black_end:([-\d.]+)\s+black_duration:([-\d.]+)"
     return [{"start": float(a), "end": float(b), "seconds": float(c)}
-            for a, b, c in re.findall(pattern, text)][:30]
+            for a, b, c in re.findall(pattern, text)]
 
 
-def scan_freeze(p: Path, seconds: float) -> list[dict[str, float]]:
-    text = _run_scan(p, "freezedetect=n=-60dB:d=2.5", length=seconds, timeout=80)
-    starts = [float(x) for x in re.findall(r"freeze_start:\s*([-\d.]+)", text)]
-    ends = [float(x) for x in re.findall(r"freeze_end:\s*([-\d.]+)", text)]
-    return [{"start": s, "end": ends[i] if i < len(ends) else None}
-            for i, s in enumerate(starts[:30])]
+def scan_freeze(p: Path, seconds: float, *, min_duration_seconds: float = 2.5) -> list[dict[str, float | None]]:
+    text = _run_scan(p, f"freezedetect=n=-60dB:d={min_duration_seconds:.4f}", length=seconds, timeout=80)
+    # Parse in occurrence order. Pairing starts[] with ends[] mispairs events
+    # when a freeze extends to the end of a truncated sample.
+    events = re.findall(r"freeze_(start|end):\s*([-\d.]+)", text)
+    active: float | None = None
+    result: list[dict[str, float | None]] = []
+    for kind, raw in events:
+        value = float(raw)
+        if kind == "start":
+            if active is not None:
+                result.append({"start": active, "end": None})
+            active = value
+        elif active is not None:
+            result.append({"start": active, "end": value})
+            active = None
+    if active is not None:
+        result.append({"start": active, "end": None})
+    return result
 
 
-def scan_silence(p: Path, seconds: float) -> list[dict[str, float | None]]:
+def scan_silence(p: Path, seconds: float, *, min_duration_seconds: float = 0.8) -> list[dict[str, float | None]]:
     """Report pauses in audio, including one that continues to the end of the scan."""
-    text = _run_scan(p, "silencedetect=noise=-50dB:d=0.8", length=seconds, audio=True, timeout=70)
+    text = _run_scan(p, f"silencedetect=noise=-50dB:d={min_duration_seconds:.4f}", length=seconds, audio=True, timeout=70)
     events = re.findall(r"silence_(start|end):\s*([-\d.]+)", text)
     active: float | None = None
     result: list[dict[str, float | None]] = []
@@ -156,7 +175,7 @@ def scan_silence(p: Path, seconds: float) -> list[dict[str, float | None]]:
             active = None
     if active is not None:
         result.append({"start": active, "end": None, "seconds": round(max(0, seconds - active), 3)})
-    return result[:30]
+    return result
 
 
 def make_poster(path: str | Path, destination: str | Path, duration: float) -> bool:
@@ -170,10 +189,17 @@ def make_poster(path: str | Path, destination: str | Path, duration: float) -> b
     return r.returncode == 0 and target.is_file() and target.stat().st_size > 500
 
 
-def audit_video(path: str | Path, *, quick: bool = False) -> dict[str, Any]:
+def audit_video(path: str | Path, *, quick: bool = False,
+                scan_limits: dict[str, float] | None = None) -> dict[str, Any]:
     p = _file(path)
     meta = probe_video(p)
     checks: list[dict[str, Any]] = []
+    configured = dict(DEFAULT_DETECTOR_SECONDS)
+    if scan_limits is not None:
+        for name, threshold in scan_limits.items():
+            if name not in configured or isinstance(threshold, bool) or not isinstance(threshold, (int, float)) or not math.isfinite(threshold) or threshold < 0:
+                raise AuditError("Ambang detektor tidak valid.")
+            configured[name] = round(min(configured[name], max(MIN_DETECTOR_SECONDS, threshold * 0.5)), 4)
     w, h, fps, dur = meta["width"], meta["height"], meta["fps"], meta["duration_seconds"]
     _check(checks, "geometry", "pass" if 0.54 <= w/h <= 0.58 else "warn", "Format 9:16",
            f"{w} × {h} ({w/h:.3f})",
@@ -192,6 +218,7 @@ def audit_video(path: str | Path, *, quick: bool = False) -> dict[str, Any]:
            str(meta["field_order"]), "Gunakan progressive scan untuk distribusi video sosial.")
     measurements: dict[str, Any] = {"analysis_seconds": 0, "limited_scan": quick or meta["duration_seconds"] > 90.0,
                                     "black_segments": [], "freeze_segments": [], "silence_segments": [], "scan_errors": [],
+                                    "truncated_sections": [], "detector_min_duration_seconds": configured if not quick else {},
                                     "integrated_lufs": None, "true_peak_dbfs": None}
     if quick:
         _check(checks, "scan_scope", "warn", "Analisis mendalam dilewati",
@@ -222,8 +249,14 @@ def audit_video(path: str | Path, *, quick: bool = False) -> dict[str, Any]:
                 _check(checks, "audio_scan", "warn", "Analisis suara", "Tidak selesai", str(exc))
         if meta["has_audio"]:
             try:
-                measurements["silence_segments"] = scan_silence(p, length)
-                n = len(measurements["silence_segments"])
+                all_silence = scan_silence(p, length, min_duration_seconds=configured["silence_segments"])
+                if len(all_silence) > MAX_EVENTS_PER_FILTER:
+                    measurements["truncated_sections"].append("silence_segments")
+                    measurements["scan_errors"].append("silence_segments_events_truncated")
+                    _check(checks, "silence_truncation", "warn", "Daftar jeda audio terpotong",
+                           f"{len(all_silence)} segmen; {MAX_EVENTS_PER_FILTER} ditampilkan", "Pemeriksaan policy untuk data yang terpotong harus diblokir.")
+                measurements["silence_segments"] = all_silence[:MAX_EVENTS_PER_FILTER]
+                n = len(all_silence)
                 _check(checks, "silence_segments", "warn" if n else "pass", "Jeda audio panjang",
                        f"{n} segmen hening ditemukan", "Jeda hening mungkin disengaja; dengarkan bagian yang tercatat.")
             except AuditError as exc:
@@ -232,8 +265,14 @@ def audit_video(path: str | Path, *, quick: bool = False) -> dict[str, Any]:
                 _check(checks, "silence_segments", "warn", "Analisis jeda audio", "Tidak selesai", str(exc))
         for key, scanner in (("black_segments", scan_black), ("freeze_segments", scan_freeze)):
             try:
-                measurements[key] = scanner(p, length)
-                n = len(measurements[key])
+                all_events = scanner(p, length, min_duration_seconds=configured[key])
+                if len(all_events) > MAX_EVENTS_PER_FILTER:
+                    measurements["truncated_sections"].append(key)
+                    measurements["scan_errors"].append(key + "_events_truncated")
+                    _check(checks, key + "_truncation", "warn", "Daftar peristiwa terpotong",
+                           f"{len(all_events)} segmen; {MAX_EVENTS_PER_FILTER} ditampilkan", "Policy terkait harus memblokir bukti yang terpotong.")
+                measurements[key] = all_events[:MAX_EVENTS_PER_FILTER]
+                n = len(all_events)
                 _check(checks, key, "warn" if n else "pass",
                        "Segmen hitam" if key == "black_segments" else "Segmen diam panjang",
                        f"{n} terdeteksi pada {length:g} detik pertama",

@@ -41,6 +41,23 @@ def render_html(result: dict[str, Any], poster: Path | None = None) -> str:
                      "<p>Deteksi berbasis sampel; beberapa cut atau jeda bisa disengaja.</p>"
                      "<table><thead><tr><th>Jenis</th><th>Mulai</th><th>Selesai</th><th>Durasi</th></tr></thead>"
                      "<tbody>" + "".join(segment_rows) + "</tbody></table></section>") if segment_rows else ""
+    measurements = result.get("measurements") or {}
+    limits = measurements.get("detector_min_duration_seconds") or {}
+    scan_seconds = measurements.get("analysis_seconds", 0)
+    if not scan_seconds:
+        coverage_label = "Metadata saja; deteksi frame hitam, beku, dan hening belum dilakukan."
+    else:
+        coverage_label = f"Dipindai {scan_seconds:g} dari {result['metadata']['duration_seconds']:g} detik sumber."
+    detail = " · ".join(
+        f"{name}: {limits[name]:g} dtk"
+        for name in ("black_segments", "freeze_segments", "silence_segments")
+        if name in limits
+    )
+    truncated = ", ".join(measurements.get("truncated_sections") or [])
+    coverage_html = (f'<section class="coverage"><h2>Cakupan &amp; sensitivitas</h2><p>{esc(coverage_label)}</p>'
+                     + (f'<p>Ambang minimum deteksi: {esc(detail)}.</p>' if detail else '')
+                     + (f'<p>Peristiwa terpotong, tidak boleh dianggap hasil lengkap: {esc(truncated)}.</p>' if truncated else '')
+                     + '<p>Ambang deteksi bukan toleransi yang diizinkan. Policy harus disesuaikan dengan ketelitian pemindai.</p></section>')
     return f"""<!doctype html><html lang="id"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><title>{esc(file['name'])} | Release Lab</title>
 <style>*{{box-sizing:border-box}}body{{font:15px/1.6 system-ui,sans-serif;background:#f4f3ed;color:#202720;margin:0}}
@@ -48,7 +65,7 @@ main{{max-width:980px;margin:auto;padding:40px 22px 80px}}.top{{display:flex;jus
 .eyebrow{{font-size:11px;font-weight:800;letter-spacing:.17em;text-transform:uppercase}}h1{{font-size:clamp(34px,5vw,58px);line-height:1.06;letter-spacing:-.06em;margin:34px 0 15px;overflow-wrap:anywhere}}
 .status{{display:inline-block;padding:8px 16px;background:#d9e5d2;border:1px solid #48654c;font-weight:800;text-transform:uppercase}}
 .status-warn{{background:#fff0cb;border-color:#7a5b2a}}.status-fail{{background:#ffe0dc;border-color:#983d36}}
-.intro{{max-width:670px;color:#48564b}}.columns{{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin:36px 0}}
+.intro{{max-width:670px;color:#48564b}}.coverage{{border:1px solid #b7c7b4;background:#e9f1e7;padding:18px 24px;margin:32px 0}}.coverage h2{{margin:0 0 8px;font-size:20px}}.coverage p{{margin:7px 0;color:#3f5042}}.columns{{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin:36px 0}}
 .panel{{background:#fff;border:1px solid #d5d8cc;padding:24px;border-radius:4px}}.poster{{max-height:390px;max-width:100%;object-fit:contain;display:block;margin:auto}}
 .meta{{list-style:none;padding:0;margin:0}}.meta li{{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #e8e9e2;padding:10px 0}}
 .meta strong{{text-align:right;overflow-wrap:anywhere}}.check{{display:grid;grid-template-columns:75px 1fr;gap:19px;padding:22px 0;border-bottom:1px solid #d8ddcf}}
@@ -66,7 +83,7 @@ footer{{margin-top:50px;border-top:1px solid #b1b5ac;padding-top:20px;color:#586
 <li><span>Frame rate</span><strong>{esc(result['metadata']['fps'])} fps</strong></li>
 <li><span>Video / audio</span><strong>{esc(result['metadata']['video_codec'])} / {esc(result['metadata']['audio_codec'] or 'tanpa audio')}</strong></li>
 <li><span>SHA-256</span><strong><code>{esc(file['sha256'][:18])}…</code></strong></li></ul></div></div>
-<h2>Catatan pemeriksaan</h2>{rows}{timeline_html}<footer>{esc(result['caveat'])}<br>Dibuat {esc(result['created_at'])} · AIWallet Release Lab v{esc(result['software_version'])} · Apache-2.0</footer></main></body></html>"""
+<h2>Catatan pemeriksaan</h2>{rows}{coverage_html}{timeline_html}<footer>{esc(result['caveat'])}<br>Dibuat {esc(result['created_at'])} · AIWallet Release Lab v{esc(result['software_version'])} · Apache-2.0</footer></main></body></html>"""
 
 
 def save_report(result: dict[str, Any], dest: Path, poster: Path | None = None) -> tuple[Path, Path]:

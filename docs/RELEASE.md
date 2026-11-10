@@ -15,7 +15,7 @@
 - [x] All repository files, tests, documentation and CI configuration prepared.
 - [ ] GitHub code push accepted and public repository URL verified.
 - [ ] README instructions tested on fresh independent machine.
-- [ ] GitHub Actions green and release tag/v0.3.0 published.
+- [ ] GitHub Actions green and release tag/v0.4.0 published.
 - [ ] README screenshot made from actual loaded browser UI (browser access unavailable in this environment).
 
 ## SaaS / subscription
@@ -27,3 +27,12 @@
 - [ ] At least three paid pilot orders or explicit demand confirmations.
 
 These unchecked gates prevent an honest claim of public release or live paid subscription.
+
+
+## v0.4 release gate
+
+- [x] Policy minimum detector precision recorded in technical receipts.
+- [x] Strict threshold below old detector precision no longer yields a false PASS.
+- [x] Reproducibility CLI returns exit 3 for mismatches/tampering.
+- [x] 54 test cases passed locally with FFmpeg 7.1.5 on Python 3.13.
+- [ ] macOS/Windows CI and GitHub release remain unverified.

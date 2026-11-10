@@ -1,6 +1,6 @@
 # Policy as Code: delivery specifications, not platform rules
 
-Release Lab's built-in PASS/CHECK logic is **heuristic**. Real studios may require different export policies. v0.3 adds a deterministic JSON policy gate for CI and batch release receipts.
+Release Lab's built-in PASS/CHECK logic is **heuristic**. Real studios may require different export policies. v0.4 adds a deterministic JSON policy gate for CI and batch release receipts.
 
 The project includes `policies/studio-vertical.json` as an **example delivery contract**. Its requirements are intentionally conservative and **are not official rules** of Instagram, TikTok or YouTube. Edit it for each client before treating it as a contractual acceptance policy.
 
@@ -15,7 +15,7 @@ releaselab batch ./exports --recursive --policy policies/studio-vertical.json --
 
 `--fail-on warn` (the default) additionally blocks generic heuristic warnings. `--fail-on none` disables only **generic** warnings; the explicitly selected policy remains enforced. To turn off policy enforcement, do not pass `--policy`.
 
-`--quick` skips audio/visual scans, emits an explicit CHECK finding, and **cannot** meet `require_full_scan:true`. Files longer than 90 seconds cannot meet this requirement with v0.3 because FFmpeg scanning deliberately stops after 90 seconds; that is a known constraint, not something the gate should quietly approve.
+`--quick` skips audio/visual scans, emits an explicit CHECK finding, and **cannot** meet `require_full_scan:true`. Files longer than 90 seconds cannot meet this requirement with v0.4 because FFmpeg scanning deliberately stops after 90 seconds; that is a known constraint, not something the gate should quietly approve.
 
 ## Supported JSON fields
 

@@ -1,6 +1,6 @@
-# Billing enablement checklist: no charging code in v0.3
+# Billing enablement checklist: no charging code in v0.4
 
-AIWallet Release Lab v0.3 is free Apache-2.0 source plus a **voluntary early-access interest form**, not a paid subscription system. The site must continue to mark prices as provisional. The following infrastructure must pass end-to-end before a paid button is turned on:
+AIWallet Release Lab v0.4 is free Apache-2.0 source plus a **voluntary early-access interest form**, not a paid subscription system. The site must continue to mark prices as provisional. The following infrastructure must pass end-to-end before a paid button is turned on:
 
 1. **Separate merchant identity:** Establish an AIWallet merchant account. Do **not** reuse a payment account belonging to another business without verified authority and merchant configuration.
 2. **Provider eligibility:** Confirm recurring channel access with Midtrans, available payment methods, supported tokenization/consent UX, currencies, refunds, cancellation and recurring merchant features. Source: https://docs.midtrans.com/reference/create-subscription

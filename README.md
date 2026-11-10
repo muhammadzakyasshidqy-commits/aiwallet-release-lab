@@ -4,13 +4,13 @@
 
 A creator can make a beautiful video and still upload an accidental 16:9 export, a silent file, an over-loud mix, an unsupported codec or a long unintended freeze. Release Lab inspects the *technical* side of a video, explains its findings, and produces a portable QA report. It does **not** generate views, rate creativity, scrape social networks, or publish on behalf of an account.
 
-**Status:** v0.2.0 alpha · Core available · Early-access interest form live · Hosted subscription and recurring checkout are not yet available.
+**Status:** v0.4.0 alpha · Core available · Early-access interest form live · Hosted subscription and recurring checkout are not yet available.
 
 ## What runs today
 
 - Local CLI + responsive browser-based workbench.
 - Optional self-contained Python **zipapp** for CLI usage on systems with Python + FFmpeg; the browser dashboard still requires FastAPI and Uvicorn.
-- **v0.2: Batch export audit, CI release gate, revision comparisons**, and reports suitable for an editor/publisher handoff.
+- **Batch export audit, CI release gate, revision comparisons**, and reports suitable for an editor/publisher handoff.
 - Real FFprobe metadata: width, height, ratio, codec, FPS, duration, audio, interlacing.
 - Bounded FFmpeg scans: integrated loudness and true peak, black frames, frozen sections and audio silence with timecodes.
 - Detailed PASS / CHECK findings with caveats instead of an unexplained AI score.
@@ -23,12 +23,12 @@ A creator can make a beautiful video and still upload an accidental 16:9 export,
 
 ### Run without installing Python packages (CLI only)
 
-If you have Python 3.11+ and FFmpeg, use the portable `releaselab-0.2.0.pyz` artifact:
+If you have Python 3.11+ and FFmpeg, use the portable `releaselab-0.4.0.pyz` artifact:
 
 ```bash
-python releaselab-0.2.0.pyz doctor
-python releaselab-0.2.0.pyz audit video.mp4 --output ./report
-python releaselab-0.2.0.pyz batch ./exports --quick
+python releaselab-0.4.0.pyz doctor
+python releaselab-0.4.0.pyz audit video.mp4 --output ./report
+python releaselab-0.4.0.pyz batch ./exports --quick
 ```
 
 The packaged browser dashboard still requires `pip install -e '.[web]'` (FastAPI, Uvicorn); zipapp is intentionally a dependency-free CLI only.
@@ -49,7 +49,7 @@ releaselab serve
 
 Open **http://127.0.0.1:7860** on the same computer. Drag in a video and press **Jalankan QC**. Your source file stays local.
 
-## Release workflows (new in v0.2)
+## Release workflows
 
 ```bash
 # Scan one file as a CI gate (exit 3 when warnings should block release)
@@ -71,6 +71,33 @@ python -m pip install -e .
 releaselab audit clip.mp4 --output ./release-report
 releaselab audit clip.mp4 --output ./quick-report --quick
 ```
+
+### Adaptive QC and verifiable technical receipts (v0.4)
+
+A strict studio policy can require a maximum black/freeze/silence segment shorter
+than the built-in detector defaults (0.4 / 2.5 / 0.8 seconds). Earlier versions
+could miss such events while still reporting a PASS. **v0.4 adapts the FFmpeg
+minimum event duration to the configured policy** and records that sensitivity.
+A pre-existing report analyzed with lower sensitivity is **blocked**, rather than
+used as false evidence of a PASS. Lists of events capped for readability also
+block strict policy decisions when the full event set was truncated.
+
+```bash
+# Explicit studio policy with adaptive detector settings; exit 3 when blocked.
+releaselab gate clip.mp4 --policy policies/studio-vertical.json --output ./qc --fail-on none
+
+# Re-run detector scans and compare the actual video with every technical field
+# of a receipt. Exit 0 for repeatable evidence, 3 for a mismatch.
+releaselab verify clip.mp4 ./qc/audit.json --policy policies/studio-vertical.json
+```
+
+`verify` is a **repeatability check, not a cryptographic signature**: it does not
+prove a publisher's identity, copyright ownership, creative approval, or genuine
+platform distribution. The report ruleset and software version must match.
+Old receipts remain readable but cannot silently receive a current-version
+verification verdict. The optional policy must also pass. Full checks are
+bounded to the first 90 seconds; quick-only receipts are labeled metadata-only.
+See [verification documentation](docs/RECEIPT_VERIFICATION.md).
 
 ### A release policy for CI
 
