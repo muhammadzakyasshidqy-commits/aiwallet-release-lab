@@ -1,3 +1,15 @@
+# Changelog
+
+## 0.6.0 — 2026-11-10
+
+- Local-only `releaselab watch` for stable new render exports and in-place revisions.
+- Old green verdict is invalidated immediately upon source signature change.
+- Persistent, resumable, atomic HTML/JSON/CSV queue receipts, no source media copy.
+- Safe one-shot mode with CI exit codes, symlink and output-path protections, bounded scans and advisory single-writer locking.
+- No busy writes while idle, corrupted state reference validation, and portable builder script.
+- Real separate-process integration test for new and replaced renders.
+- No hosted auto-processing, recurring payment or official social publishing in this version.
+
 ## 0.5.0 — 2026-11-10
 
 - Generic CSV/JSON timecoded black/freeze/silence markers from existing audit receipts without re-encoding.
@@ -15,7 +27,6 @@
 - Adversarial real-FFmpeg regression tests for sub-default black, freeze and silence events.
 - No automatic charges, remote video uploads, or fabricated customer claims.
 
-# Changelog
 
 ## 0.3.0 — 2026-11-10
 - Configurable fail-closed studio policies using bounded JSON with explicit scan-coverage validation.

@@ -37,7 +37,7 @@ for artifact in (wheel, zipapp, bundle):
 for file in site_rel.iterdir():
     if file.is_file():
         file.unlink()
-allowed_dirs = {'site','tests','src','docs','policies','cloud','examples','.github','.agents'}
+allowed_dirs = {'site','tests','src','docs','policies','cloud','examples','tools','.github','.agents'}
 allowed_files = {
     'README.md','CHANGELOG.md','CODE_OF_CONDUCT.md','CONTRIBUTING.md','Dockerfile',
     'LICENSE','PRIVACY.md','SECURITY.md','pyproject.toml','compose.yaml',

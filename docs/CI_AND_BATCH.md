@@ -33,3 +33,9 @@ releaselab compare export-v1.mp4 export-v2.mp4 --quick -o ./comparison.json
 Shows width/height/FPS/duration deltas, changed rule statuses, regression count and SHA-256 equality. Returns code 3 if a new technical regression is detected. If source export is intentionally changed (e.g. cinematic cut or silent creative), a technical warning can be valid.
 
 **Limitations:** There is no optical flow, face safety, copyright scan, human composition score, subtitle proofreading, legally binding platform compliance certification, or guaranteed distribution/virality.
+
+## Watch folders (v0.6)
+
+Run `releaselab watch ./exports --output ./qc-live --stable-seconds 3` to inspect new/revised local renders after the file signature stays unchanged. The current queue updates in `qc-live/index.html` and `state.json`. `--once` exits for cron/Task Scheduler or post-render hooks. Do not place output inside watched inputs. A change invalidates a prior accepted gate immediately; this is not a signed renderer-completion signal.
+
+See [WATCH.md](WATCH.md) for options, failure semantics, and privacy caveats.

@@ -4,7 +4,7 @@
 
 A creator can make a beautiful video and still upload an accidental 16:9 export, a silent file, an over-loud mix, an unsupported codec or a long unintended freeze. Release Lab inspects the *technical* side of a video, explains its findings, and produces a portable QA report. It does **not** generate views, rate creativity, scrape social networks, or publish on behalf of an account.
 
-**Status:** v0.5.0 alpha · Core available · Early-access interest form live · Hosted subscription and recurring checkout are not yet available.
+**Status:** v0.6.0 alpha · Core available · Early-access interest form live · Hosted subscription and recurring checkout are not yet available.
 
 ## What runs today
 
@@ -23,12 +23,12 @@ A creator can make a beautiful video and still upload an accidental 16:9 export,
 
 ### Run without installing Python packages (CLI only)
 
-If you have Python 3.11+ and FFmpeg, use the portable `releaselab-0.5.0.pyz` artifact:
+If you have Python 3.11+ and FFmpeg, use the portable `releaselab-0.6.0.pyz` artifact:
 
 ```bash
-python releaselab-0.5.0.pyz doctor
-python releaselab-0.5.0.pyz audit video.mp4 --output ./report
-python releaselab-0.5.0.pyz batch ./exports --quick
+python releaselab-0.6.0.pyz doctor
+python releaselab-0.6.0.pyz audit video.mp4 --output ./report
+python releaselab-0.6.0.pyz batch ./exports --quick
 ```
 
 The packaged browser dashboard still requires `pip install -e '.[web]'` (FastAPI, Uvicorn); zipapp is intentionally a dependency-free CLI only.
@@ -99,7 +99,7 @@ verification verdict. The optional policy must also pass. Full checks are
 bounded to the first 90 seconds; quick-only receipts are labeled metadata-only.
 See [verification documentation](docs/RECEIPT_VERIFICATION.md).
 
-### Timecoded issue markers and in-browser receipt explorer (v0.5)
+### Timecoded issue markers and in-browser receipt explorer (introduced in v0.5)
 
 The local audit now exposes a **generic CSV export** of detected black, freeze and silence intervals, each with start/end timestamps, approximate frame positions, source name, and explicit caveats about unknown end times. CSV cells are escaped to protect spreadsheet readers against formula injection.
 

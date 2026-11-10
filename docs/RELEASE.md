@@ -15,7 +15,7 @@
 - [x] All repository files, tests, documentation and CI configuration prepared.
 - [ ] GitHub code push accepted and public repository URL verified.
 - [ ] README instructions tested on fresh independent machine.
-- [ ] GitHub Actions green and release tag/v0.5.0 published.
+- [ ] GitHub Actions green and release tag/v0.6.0 published.
 - [ ] README screenshot made from actual loaded browser UI (browser access unavailable in this environment).
 
 ## SaaS / subscription
@@ -45,3 +45,12 @@ These unchecked gates prevent an honest claim of public release or live paid sub
 - [x] Report Explorer DOM tested at 1440×900 and 390×844 using local HTML/CSS/JS; marker CSV exported in browser, malicious receipt names did not generate markup, no JavaScript errors or document overflow.
 - [ ] GitHub source and Actions CI must be verified separately; do not claim green CI.
 - [ ] Video quality, copyright, and social-platform posting are not certified by technical QC.
+
+## v0.6 release gate
+
+- [x] Local render watch works without internet or user video upload.
+- [x] Real-process test creates a video after the daemon starts, modifies it, and verifies a new receipt.
+- [x] Changed source invalidates existing PASS during stability waiting.
+- [x] Atomic, restart-safe state, no fsync busy writes while idle.
+- [x] One-shot run exits 3 for empty or blocked queues; local only.
+- [ ] Windows/macOS parity, public GitHub repository/CI, recurring subscription entitlements and billing remain unverified.

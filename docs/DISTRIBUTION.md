@@ -11,7 +11,7 @@ Closest competing tools include general FFmpeg scripts, editors, full scheduling
 ## Distribution acceptance
 
 1. Publish the **actual** Apache-2.0 source tree and policy file to a dedicated, public GitHub repository with `contents:write` permission. Confirm exact owner/repo and public tree via readback. Do not confuse public ZIP downloads with a git repository.
-2. Add the already-bundled GitHub Actions matrix and a tagged `v0.5.0` release. Only describe CI as passed when the run has completed successfully.
+2. Add the already-bundled GitHub Actions matrix and a tagged `v0.6.0` release. Only describe CI as passed when the run has completed successfully.
 3. Publish two 90-second, real terminal screen recordings: one green result for an accepted export and one explainable blocked result with timestamp.
 4. Add step-by-step Windows, macOS and Linux setup instructions tested in **those** environments. Current local verification on Linux is not a Windows/macOS test.
 5. Open issue templates, label "good first issue", maintain security/privacy policies, and triage real issues. No scripted stars, comments, bot likes or fake testimonials.
@@ -26,3 +26,7 @@ Closest competing tools include general FFmpeg scripts, editors, full scheduling
 - Trial-to-paid conversion only after lawful billing and customer consent.
 
 Top-1 GitHub standing is a goal to pursue through value and real community adoption, **not** an achievable end state by running automated stars or publishing a single repository.
+
+## Portable v0.6 builder
+
+After running tests and installing the build toolchain locally, use `python tools/build_zipapp.py` to build the zero-dependency CLI. `python -m pip wheel . --no-deps --no-build-isolation -w dist` builds the wheel. Only when source, tests and git tag are committed, create the Git bundle from the tagged release with `git bundle create dist/AIWallet_ReleaseLab_v0.6.0.git.bundle --all`. `build_release.py` then assembles source archives, hash manifest and site ZIP. These local artifacts do not themselves prove GitHub publication.

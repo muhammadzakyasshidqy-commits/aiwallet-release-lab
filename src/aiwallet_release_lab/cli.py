@@ -12,6 +12,7 @@ from .report import save_report
 from .workflow import audit_batch, compare_reports, gate_report, verify_receipt
 from .markers import markers_from_file, markers_csv
 from .policy import read_policy
+from .watch import WatchSession, run_watch
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -36,6 +37,17 @@ def main(argv: list[str] | None = None) -> int:
     batch.add_argument("--max-files", type=int, default=40)
     batch.add_argument("--fail-on", choices=("warn", "fail", "none"), default="warn")
     batch.add_argument("--policy", help="Policy JSON lokal untuk semua video batch")
+    watch = sub.add_parser("watch", help="Pantau folder ekspor; jalankan QC ketika berkas sudah stabil")
+    watch.add_argument("folder", help="Direktori ekspor (sumber tidak diubah)")
+    watch.add_argument("--output", "-o", default="./release-watch", help="Direktori laporan, harus di luar folder video")
+    watch.add_argument("--recursive", action="store_true")
+    watch.add_argument("--quick", action="store_true")
+    watch.add_argument("--policy", help="JSON studio policy yang berlaku untuk semua video baru")
+    watch.add_argument("--fail-on", choices=("warn", "fail", "none"), default="warn")
+    watch.add_argument("--stable-seconds", type=float, default=3.0, help="Tunggu ukuran dan waktu modifikasi tetap stabil")
+    watch.add_argument("--poll-interval", type=float, default=2.0, help="Interval polling dalam detik (0.2–120)")
+    watch.add_argument("--max-files", type=int, default=40)
+    watch.add_argument("--once", action="store_true", help="Periksa sekali; berguna untuk cron/scheduler")
     compare = sub.add_parser("compare", help="Bandingkan dua ekspor dan tunjukkan regresi teknis")
     compare.add_argument("before")
     compare.add_argument("after")
@@ -67,6 +79,14 @@ def main(argv: list[str] | None = None) -> int:
                 raise AuditError("Dashboard hanya boleh di-bind ke loopback pada versi alpha ini.")
             uvicorn.run("aiwallet_release_lab.web:app", host=args.host, port=args.port, log_level="info")
             return 0
+        if args.command == "watch":
+            session = WatchSession(args.folder, args.output, recursive=args.recursive,
+                                   quick=args.quick, fail_on=args.fail_on,
+                                   policy=read_policy(args.policy) if args.policy else None,
+                                   stable_seconds=0 if args.once else args.stable_seconds,
+                                   max_files=args.max_files)
+            run_watch(session, poll_interval=args.poll_interval, max_cycles=1 if args.once else None)
+            return 0 if session.records and all(row["gate_passed"] for row in session.records.values()) else 3
         if args.command == "verify":
             verification = verify_receipt(args.video, args.report,
                                           policy=read_policy(args.policy) if args.policy else None)

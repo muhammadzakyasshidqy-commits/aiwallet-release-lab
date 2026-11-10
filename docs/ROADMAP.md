@@ -65,3 +65,11 @@ All items unchecked are *not yet implemented*.
 - Improve long-video scan coverage and cost limits without false pass.
 - Real GitHub canonical repository and cross-platform CI, then substantive contributions and adoption.
 - Hosted multi-tenant managed QC with auth, quotas and verified billing only after cost and privacy gates.
+
+## v0.6 delivered — render watch
+
+- [x] `releaselab watch ./exports -o ./qc-live`: detect stable exports locally and inspect only changed videos.
+- [x] Fail closed when video changes while FFmpeg is running, or source signature changes before new QC.
+- [x] Atomic local JSON/HTML/CSV results, restart-safe resumability, one-shot mode for scheduled tasks.
+- [x] Symlink and input/output safety; bounded file count and CLI intervals.
+- [ ] Real external beta testers, Windows/macOS validation, GitHub repo/Actions, paying SaaS.
