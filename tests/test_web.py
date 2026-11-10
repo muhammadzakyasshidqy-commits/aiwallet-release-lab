@@ -78,8 +78,9 @@ def test_security_headers_and_cross_origin_write_rejected(tmp_path):
         assert not list(tmp_path.glob('aiwallet_qc_*'))
 
 
-def test_voluntary_waitlist_origin_is_explicitly_allowlisted(tmp_path):
+def test_dashboard_csp_blocks_external_waitlist_connections(tmp_path):
     with TestClient(create_app(tmp_path)) as c:
         csp = c.get('/').headers['content-security-policy']
-        assert "connect-src 'self' https://jwdxpigxgasybqaovsma.supabase.co" in csp
+        assert "connect-src 'self';" in csp
+        assert "jwdxpigxgasybqaovsma" not in csp
         assert "unsafe-inline" not in csp

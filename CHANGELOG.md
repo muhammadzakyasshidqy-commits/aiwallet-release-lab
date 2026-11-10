@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.8.0 — 2026-11-11
+
+- Removed the proposed recurring Creator Cloud and Studio Workspace paid plans from the public website and local dashboard.
+- Free Apache-2.0 forever: no paid seats, automatic billing, telemetry or waitlist signup.
+- Optional one-time professional installation/integration assistance is independent of the free software.
+- Tightened local dashboard Content-Security-Policy to disallow the former remote waitlist endpoint.
+- Added standalone GitHub source publication guidance and tests protecting the no-subscription policy.
+- Retained v0.7 technical QC, local Render Watch and SHA-bound editorial review unchanged.
+- 101 local automated tests on Python 3.13/Linux and FFmpeg 7.1.5.
+- GitHub repository publication and independent multi-OS CI remain unverified.
+
 ## 0.7.0 — 2026-11-11
 
 - Added explicit human editorial review separate from automated technical QC.

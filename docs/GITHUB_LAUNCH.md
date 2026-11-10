@@ -1,28 +1,18 @@
-# GitHub launch and actual ranking criteria
+# Dedicated GitHub publication checklist (not yet complete)
 
-**Status:** Source release ready. GitHub repository publication not verified. A connected GitHub tool returned `403 Resource not accessible by integration` for content writes on the account's existing website repository. This is a permission issue, **not** a publish success. A public repository path must be verified before announcing availability on GitHub.
+**Candidate repository:** `muhammadzakyasshidqy-commits/aiwallet-release-lab` (not claimed to exist). **Public site:** https://aiwallet-studio-qz.higgsfield.app/
 
-## Publish a true open-source repository
+The installed GitHub connector reads the owner's existing repository but previously returned HTTP 403 `Resource not accessible by integration` on Content writes. An account login alone might not grant App **Contents: Read and write** permission. This permission must be granted explicitly to the connected GitHub App/repository. Do not share personal access tokens or passwords through chat.
 
-1. Create a **new public repository** named `aiwallet-release-lab` under the verified account. Keep the existing AIWallet website repo separate. Do not copy the proprietary customer data, social-session cookies, or any tokens.
-2. Extract this ZIP into the new repository's root (not one nested directory).
-3. Run `python -m pip install -e '.[web,dev]' && pytest -q && releaselab doctor` with FFmpeg installed.
-4. Set repository About/Topics based on what genuinely ships (`ffmpeg`, `video-qc`, `reels`, `shorts`, `local-first`, `open-source`); attach a screenshot of the real demo and the sample report.
-5. Publish a semver `v0.6.0` release containing the source archive and a SHA-256 checksum. Do not represent a ZIP upload as GitHub source control.
-6. Enable Issues, Discussions, Security Policy, Dependabot, and Actions CI. Verify CI runs on multiple supported Python versions before advertising it as green.
-7. Add the repository URL and the real release asset URL to the website **after** they exist.
+## Publish safely
 
-## How to earn an actual category lead
+1. Authorize GitHub Contents-write for the new repository and create it under the owner's GitHub account, or connect a Browser session with an authenticated GitHub tab. Keep existing unrelated repos unchanged.
+2. Import `AIWallet_ReleaseLab_v0.8.0.git.bundle` (full Git history and tag) into an empty repository, or unzip the source ZIP into its root. **Never** publish test secrets, session cookies or user videos.
+3. Run `python -m pip install -e '.[web,dev]'` and `pytest -q`; check local FFmpeg and FFprobe versions.
+4. Verify Actions CI **on the canonical public repo**, across all supported Python versions. The local test result is not CI.
+5. Publish GitHub Release `v0.8.0` with source, Python wheel, portable CLI, SHA-256 file. Check each public download.
+6. Only then add GitHub URLs to the public website, announce in relevant communities with real demonstration and issues enabled.
 
-No system can guarantee a #1 position, followers, stars, or paid buyers. Strong practical adoption would require distribution and retention, not just an impressive landing page.
+Release Lab is free Apache-2.0. **No recurring subscriptions or paid tiers.** Optional one-time services are outside the repository's free software license.
 
-- **Weeks 1–2:** obtain verified on-device results from 10 distinct creators (with consent); fix setup problems.
-- **Weeks 3–4:** ship repeatable batch QC and editor/CI integration examples; measure how many users run the tool twice.
-- **Months 2–3:** target 30 meaningful issue/discussion replies and a few external pull requests. Measure weekly repeat teams, not raw impressions.
-- **Later:** launch managed hosting only after the subscription security and cost gates in `docs/SUBSCRIPTION_CONTRACT.md` pass.
-
-Do not buy stars, mass-comment, imitate contributors, promise viral performance, or fabricate testimonials.
-
-## Verified v0.6 release assets
-
-The standalone receipt explorer offers a zero-signup reason to try the tool before installing Python or FFmpeg. Publish a screenshot of an actual synthetic receipt with timecoded events. The CSV exporter is generic: do not claim Premiere or Resolve native imports without verifying a documented target format.
+Category ranking cannot be guaranteed and must be sourced from independent GitHub results, date, and exact scope. Do not automate fake stars, spam or fabricated testimonials.

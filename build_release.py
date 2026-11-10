@@ -77,8 +77,8 @@ manifest={
     'test_environment':'Python 3.13 / Linux, FFmpeg (local runtime)',
     'github_actions_verification':'NOT_VERIFIED',
     'github_source_repo_verification':'NOT_PUBLISHED',
-    'subscription_payment_status':'NOT_ENABLED',
-    'hosted_processing_status':'NOT_ENABLED',
+    'subscription_payment_status':'NOT_APPLICABLE_NO_RECURRING_BILLING',
+    'hosted_processing_status':'NOT_OFFERED',
     'cloud_storage_of_user_video':False,
     'artifacts':artifacts,
 }

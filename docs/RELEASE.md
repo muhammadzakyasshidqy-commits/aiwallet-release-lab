@@ -1,56 +1,13 @@
-# Public release checklist
+# v0.8 public release checklist
 
-## Core safety and quality
+- [x] Apache-2.0 license present and no recurring billing/plan CTA in marketing or local UI.
+- [x] Portable CLI, wheel, local dashboard source, Render Watch and creative review.
+- [x] Synthetic FFmpeg fixture tests and local quality gate validation.
+- [x] Reproducible hash-verified source ZIP, wheel, pyz and Git bundle artifacts after build.
+- [ ] Independent Windows/macOS install and FFmpeg validation.
+- [ ] Dedicated public GitHub repository under authorized account and Actions CI green.
+- [ ] External editors' real beta feedback and objective error-rate metrics.
 
-- [x] License file and open source promise agree (Apache-2.0).
-- [x] CLI, web endpoints and media inspections run against synthetic fixtures.
-- [x] No fake customer/testimonial/revenue or star claims.
-- [x] No network calls in the media analysis core.
-- [x] Files bounded and removed after processing; report exports escape user-supplied names.
-- [ ] Validate Docker image build on Linux host (not verified in this environment).
-- [ ] Verify native Windows/macOS installation and E2E GUI tests (browser automation blocked by environment policy during this run).
+**Not included:** recurring subscriptions, hosted uploads, cloud user authentication, paid tiers, fake GitHub stars or creativity scoring.
 
-## GitHub publication
-
-- [x] All repository files, tests, documentation and CI configuration prepared.
-- [ ] GitHub code push accepted and public repository URL verified.
-- [ ] README instructions tested on fresh independent machine.
-- [ ] GitHub Actions green and release tag/v0.6.0 published.
-- [ ] README screenshot made from actual loaded browser UI (browser access unavailable in this environment).
-
-## SaaS / subscription
-
-- [x] Opt-in early-access interest endpoint deployed and verified, isolated by RLS and no direct public DB privileges.
-- [ ] Verified multi-tenant SaaS environment and data protection.
-- [ ] Payment provider recurring feature enabled and production webhook tested.
-- [ ] Client billing consent, cancellation, refunds, entitlement states.
-- [ ] At least three paid pilot orders or explicit demand confirmations.
-
-These unchecked gates prevent an honest claim of public release or live paid subscription.
-
-
-## v0.4 release gate
-
-- [x] Policy minimum detector precision recorded in technical receipts.
-- [x] Strict threshold below old detector precision no longer yields a false PASS.
-- [x] Reproducibility CLI returns exit 3 for mismatches/tampering.
-- [x] 54 test cases passed locally with FFmpeg 7.1.5 on Python 3.13.
-- [ ] macOS/Windows CI and GitHub release remain unverified.
-
-## v0.5 release gate
-
-- [x] Generic CSV and JSON timecoded event markers tested against real FFmpeg receipts.
-- [x] CSV formula injection protection and bounded invalid-input rejection.
-- [x] Local dashboard marker CSV download.
-- [x] Report Explorer DOM tested at 1440×900 and 390×844 using local HTML/CSS/JS; marker CSV exported in browser, malicious receipt names did not generate markup, no JavaScript errors or document overflow.
-- [ ] GitHub source and Actions CI must be verified separately; do not claim green CI.
-- [ ] Video quality, copyright, and social-platform posting are not certified by technical QC.
-
-## v0.6 release gate
-
-- [x] Local render watch works without internet or user video upload.
-- [x] Real-process test creates a video after the daemon starts, modifies it, and verifies a new receipt.
-- [x] Changed source invalidates existing PASS during stability waiting.
-- [x] Atomic, restart-safe state, no fsync busy writes while idle.
-- [x] One-shot run exits 3 for empty or blocked queues; local only.
-- [ ] Windows/macOS parity, public GitHub repository/CI, recurring subscription entitlements and billing remain unverified.
+Verification of public deployment and release URLs requires a separate HTTP download and SHA-256 check; building a ZIP or submitting deployment alone is insufficient.

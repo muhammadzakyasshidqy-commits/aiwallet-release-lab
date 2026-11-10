@@ -36,7 +36,7 @@ truncated evidence as insufficient for strict policy.
 These heuristics are not perfect frame-level detectors and do not certify
 social network requirements, accessibility, rights, authenticity, creative
 quality, or commercial performance. Source media never leaves the local CLI.
-The optional paid-hosting waitlist is separate from this CLI.
+No SaaS waiting list or paid subscription exists in v0.8.
 
 ## Security model
 

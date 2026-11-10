@@ -29,7 +29,7 @@ There is no cloud storage, social OAuth, billing API, email or analytics in the 
 
 ## Upgrade path for SaaS (not shipped)
 
-Before public SaaS launch, deploy a separate backend and implement tenant-isolated auth, durable object storage, queue-backed FFmpeg workers, admission quotas, per-tenant rate limits, retention, reporting, role-based approval, usage metering, subscription webhook verification, plan changes, and customer data export/deletion. Encrypt tokens and separate tenant data by strict backend checks; no server-side session token should ever enter a browser log.
+The product remains **single-user and local-only**. It has no multi-tenant SaaS, shared media storage, recurring billing, or cloud processing. Bind the web API to loopback, enforce Host validation and upload size limits, and keep audit history in local SQLite. Do not expose this alpha server publicly without a separate security design.
 
 ## Runtime limits
 

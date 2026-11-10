@@ -43,25 +43,6 @@ async function history(){try{const res=await fetch('/api/reports',{cache:'no-sto
 form.addEventListener('submit',async e=>{e.preventDefault();if(!chosen){notify('Pilih berkas video terlebih dahulu.',true);return}if(!$('consent-local').checked){notify('Centang persetujuan pemeriksaan lokal.',true);return}run.disabled=true;notify('Membaca frame, metadata, dan audio…');const fd=new FormData();fd.append('file',chosen,chosen.name);try{const res=await fetch('/api/audits',{method:'POST',body:fd});let data={};try{data=await res.json()}catch{}if(!res.ok)throw new Error(data.detail||'Analisis gagal.');showReport(data.id,data.report,data.poster_url);notify('QC selesai. Laporan dapat diunduh.');chosen=null;input.value='';setText('file-label','Taruh video di sini');setText('file-details','Atau klik untuk memilih file dari perangkat');await history()}catch(err){notify(err.message||'Analisis gagal.',true)}finally{run.disabled=false}});
 history();
 
-// Explicit opt-in only. Core audits never contact the hosted interest endpoint.
-const waitDialog=$('waitlist-dialog'), waitForm=$('waitlist-form'), waitStatus=$('waitlist-status');
-document.querySelectorAll('.waitlist-open').forEach(button=>button.addEventListener('click',()=>{
-  $('waitlist-plan').value=button.dataset.plan;waitStatus.textContent='';waitDialog.showModal();
-}));
-$('close-waitlist').addEventListener('click',()=>waitDialog.close());
-waitForm.addEventListener('submit',async event=>{
- event.preventDefault();if(!waitForm.reportValidity())return;
- const send=$('send-waitlist');send.disabled=true;waitStatus.textContent='Mencatat minat…';
- const data=Object.fromEntries(new FormData(waitForm).entries());
- try{const res=await fetch('https://jwdxpigxgasybqaovsma.supabase.co/functions/v1/aiwallet-release-interest',{
-    method:'POST',headers:{'content-type':'application/json'},
-    body:JSON.stringify({name:data.name,email:data.email,plan:data.plan,consent:!!data.consent,website:data.website})
-  });let out={};try{out=await res.json()}catch{}
-  if(!res.ok||!out.ok)throw new Error(out.message||'Layanan pencatatan minat belum tersedia.');
-  waitStatus.textContent='Minatmu tercatat. Tidak ada penagihan atau langganan aktif.';waitForm.reset();
- }catch(err){waitStatus.textContent=err.message||'Pengiriman gagal. Hubungi kontak AIWallet.';}finally{send.disabled=false}
-});
-
 // Human creative approval is NOT inferred from technical QC. All content stays local.
 const editorialForm=$('editorial-form'), editorialState=$('editorial-state'), editorialDownload=$('download-editorial');
 const reviewFields=['story_hook','visual_clarity','pacing','sound_design','brand_accuracy'];

@@ -4,7 +4,7 @@
 
 A creator can make a beautiful video and still upload an accidental 16:9 export, a silent file, an over-loud mix, an unsupported codec or a long unintended freeze. Release Lab inspects the *technical* side of a video, explains its findings, and produces a portable QA report. It does **not** generate views, rate creativity, scrape social networks, or publish on behalf of an account.
 
-**Status:** v0.7.0 alpha · Core available · Early-access interest form live · Hosted subscription and recurring checkout are not yet available.
+**Status:** v0.8.0 alpha · 100% free/open-source core · No paid subscription, no recurring billing, no online account required.
 
 ## What runs today
 
@@ -19,7 +19,7 @@ A creator can make a beautiful video and still upload an accidental 16:9 export,
 - Strict local `Host` validation to reduce DNS rebinding risk when using the localhost dashboard.
 - Portable `audit.json`, standalone `audit.html` (with embedded still image) and SHA-256 fingerprint.
 - Local SQLite history, file upload, report export, individual report deletion.
-- No network request from the **audit core** to an AI vendor or social network. Only the separately labeled, voluntary managed-hosting interest form sends a name/email/plan to the AIWallet Supabase endpoint after consent. Original video is **deleted from work storage after analysis**; the still image and report are stored locally until deleted.
+- No network request from the **audit core** to an AI vendor or social network. No subscription waitlist or marketing tracker runs in the product. Original video is **deleted from work storage after analysis**; the still image and report are stored locally until deleted.
 - Explicit scan limit: first **90 seconds** (full media metadata and SHA-256 are not truncated). Limits are documented and shown in result JSON.
 
 ### Run without installing Python packages (CLI only)
@@ -114,9 +114,9 @@ The browser workbench also offers a **CSV timecode** download for each saved rep
 
 These are **NLE-neutral markers**, not an EDL, an SMPTE drop-frame file, or a guaranteed Premiere/Resolve marker importer. `0 events` from a quick or truncated scan never means an error-free video. This is technical evidence, not subjective video scoring.
 
-### Editorial review is a separate gate (v0.7)
+### Editorial review is a separate gate (v0.8)
 
-A video may be a perfectly valid 9:16 H.264/AAC file and still be *poorly edited*. The technical audit cannot judge hook, story, framing, subtitles, sound choice, or brand fit. In v0.7, the local dashboard has a **Human Creative Review** form with five explicitly human-rated criteria and revision notes. Review history is stored on your device, can be exported as JSON, and is bound to the exact source SHA-256. A reviewer name is self-declared: **no authentication, signature or legal sign-off is claimed**.
+A video may be a perfectly valid 9:16 H.264/AAC file and still be *poorly edited*. The technical audit cannot judge hook, story, framing, subtitles, sound choice, or brand fit. In v0.8, the local dashboard has a **Human Creative Review** form with five explicitly human-rated criteria and revision notes. Review history is stored on your device, can be exported as JSON, and is bound to the exact source SHA-256. A reviewer name is self-declared: **no authentication, signature or legal sign-off is claimed**.
 
 With the CLI, generate a local review after physically watching the file:
 
@@ -168,17 +168,13 @@ Do not expose this alpha server publicly: **there is no multi-user authenticatio
 
 A CHECK result is not necessarily a bad video. This is **technical QA**, not a content moderation verdict or a promise of distribution performance.
 
-## Business model: open source + optional managed subscription
+## Business model: free Apache-2.0 source, no subscription
 
-The core is **Apache-2.0** and free to self-host, modify or use commercially. The planned paid offering would charge for hosted infrastructure, cross-device history, team review and managed processing capacity, not the right to inspect code. This is how an honestly open-source product can support recurring revenue.
+**The application is free permanently.** It can be used privately, at a studio, in CI and for commercial work under the Apache-2.0 license. We do not sell a monthly license, host user videos, or require accounts to unlock features.
 
-| Mode | Status | Intended price | Included now? |
-|---|---|---:|---|
-| Community / Self-hosted | Working alpha | Rp0 | Yes: CLI, dashboard, local reports |
-| Creator Cloud | Hypothesis / early-access interest | Rp149,000 per month | Not yet: hosted processing, backups, multi-device history |
-| Studio Workspace | Hypothesis / early-access interest | Rp499,000 per month | Not yet: seats, approvals, review history |
+A separate *optional* professional service may be quoted for a **one-time** setup, policy adaptation, FFmpeg integration or implementation help. A project quote must be agreed before any work. The software works without it. There is no checkout on this website, no automated charge and no renewal. No completed paid project is claimed.
 
-*Prices above are proposals for customer discovery, not an active subscription checkout. The **early-access interest form is active**, accepts voluntarily submitted name/email/plan with consent, and stores them in a Supabase table protected by RLS. This does not activate a paid account.* There is **no automated recurring charge**, **no auto-renewal**, and **no paid gating** in the release. Indonesian recurring billing would require merchant-specific enablement, tokenization, webhook signature verification, refunds and cancellation handling. See `docs/BUSINESS.md`.
+There is **no paid SaaS waiting list**. A former interest endpoint has been retired; no email list is necessary to use the product. Read [Business principles](docs/BUSINESS.md) and [GitHub publication](docs/GITHUB_LAUNCH.md).
 
 ## REST API (localhost only)
 

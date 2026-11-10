@@ -1,16 +1,9 @@
-# Static marketing site
+# AIWallet Release Lab marketing website
 
-This directory contains a completely static, standalone landing site. It is safe to deploy independently of the local FastAPI application. It does NOT pretend to run video checks in the browser: it displays a reproducible, synthetic example and links to the self-hosting source package.
+This is a static site for the **free, Apache-2.0** local-first Release Lab. No paid plans, waitlist form, subscription, auto-renewal, user video uploads or analytics trackers. The published website provides source ZIP / CLI / wheel / git bundle downloads, a synthetic technical report, and an in-browser receipt explorer that reads local JSON.
 
-## Files
+Use `index.html`, `style.css`, `app.js`, `tools/`, `demo/`, `assets/` and `releases/` together when deploying. No external JavaScript library. Reports are technical evidence, not a guarantee of creative quality or social platform acceptance.
 
-- `index.html` — editorial one-page product, status and pricing.
-- `style.css`, `app.js`, `assets/icon.svg` — bundled visuals and interactions. No CDN libraries.
-- `demo/audit.html`, `demo/audit.json`, `demo/synthetic-black-example.mp4` — synthetic example for users to reproduce.
-- `releases/aiwallet-release-lab-v0.7.0.zip` — the complete open-source core package, generated without nesting the marketing site.
+Production website: https://aiwallet-studio-qz.higgsfield.app/
 
-The early-access dialog POSTs only after name, email, selected plan and explicit consent to the connected Supabase Edge endpoint. Payments are disabled.
-
-Deployment is currently hosted at https://aiwallet-studio-qz.higgsfield.app/ . Check the live deployment and asset hashes separately before claiming a new version is online.
-
-- `tools/receipt-explorer.html` (plus CSS/JS) — client-side JSON receipt viewer and generic marker CSV export; no file uploads.
+Versioned release downloads are built by `build_release.py` from a passing test run, then independently verified after deployment. The original ZIP/Git bundle under `releases/` is the code distribution.

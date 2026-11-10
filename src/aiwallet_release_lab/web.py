@@ -120,7 +120,7 @@ def create_app(data_dir: Path | None = None, *, max_bytes: int = MAX_FILE_BYTES)
         response.headers.setdefault("X-Content-Type-Options", "nosniff")
         response.headers.setdefault("Referrer-Policy", "no-referrer")
         response.headers.setdefault("X-Frame-Options", "DENY")
-        response.headers.setdefault("Content-Security-Policy", "default-src 'self'; img-src 'self' data: blob:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'; connect-src 'self' https://jwdxpigxgasybqaovsma.supabase.co; form-action 'self'; frame-ancestors 'none'")
+        response.headers.setdefault("Content-Security-Policy", "default-src 'self'; img-src 'self' data: blob:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'")
         if request.url.path.startswith("/api/"):
             response.headers.setdefault("Cache-Control", "no-store")
         return response
