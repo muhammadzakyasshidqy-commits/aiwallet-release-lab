@@ -1,0 +1,19 @@
+{
+  "schema": "aiwallet.release-policy/v1",
+  "name": "Studio vertical video delivery",
+  "min_width": 720,
+  "min_height": 1280,
+  "min_fps": 23.5,
+  "max_fps": 60.5,
+  "min_duration_seconds": 3,
+  "max_duration_seconds": 90,
+  "allowed_codecs": ["h264"],
+  "require_audio": true,
+  "require_full_scan": true,
+  "min_lufs": -26,
+  "max_lufs": -10,
+  "max_true_peak_dbfs": -1,
+  "max_black_segment_seconds": 0.8,
+  "max_freeze_segment_seconds": 2.5,
+  "max_silence_segment_seconds": 4
+}

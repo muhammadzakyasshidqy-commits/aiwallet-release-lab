@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0",
+  "software_version": "0.1.0",
+  "ruleset": "reels-qc-2026.11.1",
+  "created_at": "2026-11-10T00:29:21.763622+00:00",
+  "file": {
+    "name": "synthetic-black-example.mp4",
+    "sha256": "119bbf3a7be4f0803b7cd609dec71c490ae319becd3ba63ec52c6ac432260d04",
+    "size_bytes": 3230
+  },
+  "metadata": {
+    "duration_seconds": 3.0,
+    "width": 360,
+    "height": 640,
+    "aspect_ratio": 0.5625,
+    "fps": 24.0,
+    "video_codec": "h264",
+    "audio_codec": null,
+    "has_audio": false,
+    "format": "mov,mp4,m4a,3gp,3g2,mj2",
+    "size_bytes": 3230,
+    "bitrate_bps": 8613,
+    "field_order": "progressive"
+  },
+  "checks": [
+    {
+      "code": "geometry",
+      "level": "pass",
+      "title": "Format 9:16",
+      "observation": "360 × 640 (0.562)",
+      "advice": "9:16 direkomendasikan untuk video vertikal. Format lain mungkin memang sengaja dipilih."
+    },
+    {
+      "code": "resolution",
+      "level": "warn",
+      "title": "Ketajaman dasar",
+      "observation": "360 × 640",
+      "advice": "Ekspor sekurang-kurangnya 720 × 1280; 1080 × 1920 lebih aman untuk master vertikal."
+    },
+    {
+      "code": "codec",
+      "level": "pass",
+      "title": "Kompatibilitas video",
+      "observation": "h264",
+      "advice": "H.264 dalam MP4 biasanya paling mudah diterima lintas platform."
+    },
+    {
+      "code": "duration",
+      "level": "pass",
+      "title": "Durasi konten singkat",
+      "observation": "3 detik",
+      "advice": "Durasi 3–180 detik hanyalah patokan workflow ini, bukan batas resmi platform."
+    },
+    {
+      "code": "fps",
+      "level": "pass",
+      "title": "Frame rate",
+      "observation": "24.0 fps",
+      "advice": "Gunakan 24, 25, 30, atau 60 fps bila cocok dengan footage sumber."
+    },
+    {
+      "code": "audio",
+      "level": "warn",
+      "title": "Ketersediaan audio",
+      "observation": "Tidak ada audio",
+      "advice": "Periksa apakah video memang dimaksudkan tanpa suara."
+    },
+    {
+      "code": "frame_order",
+      "level": "pass",
+      "title": "Pemindaian progresif",
+      "observation": "progressive",
+      "advice": "Gunakan progressive scan untuk distribusi video sosial."
+    },
+    {
+      "code": "black_segments",
+      "level": "warn",
+      "title": "Segmen hitam",
+      "observation": "1 terdeteksi pada 3 detik pertama",
+      "advice": "Periksa secara visual; transisi hitam dan gambar diam dapat sepenuhnya disengaja."
+    },
+    {
+      "code": "freeze_segments",
+      "level": "warn",
+      "title": "Segmen diam panjang",
+      "observation": "1 terdeteksi pada 3 detik pertama",
+      "advice": "Periksa secara visual; transisi hitam dan gambar diam dapat sepenuhnya disengaja."
+    }
+  ],
+  "measurements": {
+    "analysis_seconds": 3.0,
+    "limited_scan": false,
+    "black_segments": [
+      {
+        "start": 0.0,
+        "end": 2.958333,
+        "seconds": 2.958333
+      }
+    ],
+    "freeze_segments": [
+      {
+        "start": 0.0,
+        "end": null
+      }
+    ],
+    "integrated_lufs": null,
+    "true_peak_dbfs": null
+  },
+  "summary": {
+    "status": "warn",
+    "passed": 5,
+    "warnings": 4,
+    "failed": 0
+  },
+  "caveat": "QC teknis berbasis heuristik, bukan jaminan moderasi, viralitas, atau penerimaan platform."
+}

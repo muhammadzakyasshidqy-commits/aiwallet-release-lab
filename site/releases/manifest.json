@@ -1,0 +1,30 @@
+{
+  "schema": "aiwallet.release-evidence/v1",
+  "product": "AIWallet Release Lab",
+  "version": "0.3.0",
+  "publish_date": "2026-11-10",
+  "code_license": "Apache-2.0",
+  "verified_local_tests": 45,
+  "test_environment": "Python 3.13 / Linux, FFmpeg CLI available",
+  "github_actions_verification": "NOT_VERIFIED",
+  "github_source_repo_verification": "NOT_PUBLISHED",
+  "subscription_payment_status": "NOT_ENABLED",
+  "cloud_storage_of_user_video": false,
+  "artifacts": [
+    {
+      "name": "aiwallet-release-lab-v0.3.0.zip",
+      "bytes": 328676,
+      "sha256": "110eb1d0f5cd35a0f136bc75e9456ee747854fa21853a9ec0e57727b48c8844e"
+    },
+    {
+      "name": "aiwallet_release_lab-0.3.0-py3-none-any.whl",
+      "bytes": 44867,
+      "sha256": "63b0845afbed57d7a4c6134ac98bfe21ec7c0a5d55244b24e114acff777ad370"
+    },
+    {
+      "name": "releaselab-0.3.0.pyz",
+      "bytes": 171805,
+      "sha256": "89ad9e1fb9d3b2b4e939847f086afc464b431fd935062e811590e164503d9f83"
+    }
+  ]
+}

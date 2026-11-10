@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#eff0e8">
+<meta name="description" content="AIWallet Release Lab: alat open-source untuk memeriksa video sebelum Reels, Shorts, atau TikTok dipublikasikan. Lokal, tanpa unggah ke cloud.">
+<title>AIWallet Release Lab — Video QC, sebelum publish</title>
+<link rel="icon" href="/static/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/static/style.css">
+<script defer src="/static/app.js"></script>
+</head>
+<body>
+<a class="skip" href="#lab">Langsung ke alat QC</a>
+<div class="shell">
+<header class="topbar">
+  <a class="brand" href="#top" aria-label="AIWallet Release Lab, beranda"><span class="brand-mark">a.</span><span>AIWALLET<span class="brand-muted"> / RELEASE LAB</span></span></a>
+  <nav aria-label="Navigasi utama" class="navigation" id="navigation">
+    <a href="#lab">Workbench</a><a href="#workflow">Cara kerja</a><a href="#open-source">Open source</a><a href="#pricing">Langganan</a>
+  </nav>
+  <a class="nav-cta" href="#lab">Audit video <span aria-hidden="true">↗</span></a>
+  <button class="menu-button" id="menu-button" aria-label="Buka menu" aria-controls="navigation" aria-expanded="false"><span></span><span></span></button>
+</header>
+<main>
+<section class="hero" id="top" aria-labelledby="hero-title">
+  <div class="hero-copy">
+    <p class="eyebrow"><span class="live-dot"></span> Open source · Offline-first · Rilis 0.1</p>
+    <h1 id="hero-title">Video sudah jadi.<br><em>Sudah siap tayang?</em></h1>
+    <p class="hero-lead">Jangan tebak kualitas teknis sebelum upload. AIWallet memeriksa rasio, resolusi, codec, audio, bagian hitam, dan frame diam. Laporan jelas, dengan bukti yang bisa disimpan.</p>
+    <div class="hero-actions"><a class="primary-action" href="#lab">Periksa video gratis <span>↗</span></a><a class="subtle-action" href="#workflow">Lihat cara kerja <span aria-hidden="true">↘</span></a></div>
+    <div class="hero-notes"><span><b>0</b> akun wajib</span><span><b>0</b> upload cloud</span><span><b>100%</b> file lokal</span></div>
+  </div>
+  <div class="hero-visual" aria-label="Ilustrasi antarmuka pemeriksaan frame vertikal">
+    <div class="frame-annotation top">FRAME / 9:16<br><small>1080 × 1920 · MASTER</small></div>
+    <div class="image-stage">
+      <div class="stage-orbit orbit-one"></div><div class="stage-orbit orbit-two"></div><div class="stage-square"><span>▶</span></div><div class="stage-highlight"></div>
+      <div class="safe-boundary"><span>PERIKSA AREA TEKS</span></div>
+    </div>
+    <div class="frame-annotation bottom"><span>01 / VIDEO CHECK</span><span class="tiny-badge">NO CLOUD REQUIRED</span></div>
+  </div>
+</section>
+<div class="ticker" aria-label="Fitur utama"><div>FORMAT 9:16 <i>✳</i> H.264 / MP4 <i>✳</i> TRUE PEAK <i>✳</i> LOUDNESS <i>✳</i> BLACK FRAMES <i>✳</i> FREEZE SCAN <i>✳</i> SHA-256 <i>✳</i> PORTABLE REPORT</div></div>
+<section class="workbench section" id="lab" aria-labelledby="lab-title">
+  <div class="section-kicker"><span>01 / WORKBENCH</span><span>REAL TOOL · RUNS LOCALLY</span></div>
+  <div class="section-head"><h2 id="lab-title">Periksa sebelum <span>publish.</span></h2><p>Masukkan video. Analisis berjalan pada komputer ini; berkas asli dihapus dari folder kerja setelah selesai. Laporan teknis disimpan secara lokal.</p></div>
+  <div class="lab-layout">
+    <div class="upload-panel">
+      <div class="panel-heading"><span class="panel-symbol">↳</span><div><h3>Media intake</h3><p>Siap untuk MP4, MOV, M4V, WebM, MKV</p></div><span class="panel-step">STEP 01</span></div>
+      <form id="audit-form">
+        <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Pilih atau letakkan video"><input id="video-file" name="file" type="file" accept=".mp4,.mov,.m4v,.webm,.mkv,video/*" aria-label="Pilih file video"><span class="drop-icon" aria-hidden="true">+</span><strong id="file-label">Taruh video di sini</strong><p id="file-details">Atau klik untuk memilih file dari perangkat</p><span class="drop-caption">Maks. 256 MiB · file tidak dikirim ke pihak ketiga</span></div>
+        <div class="form-row"><label class="toggle"><input type="checkbox" id="consent-local" required><span>Izinkan pemeriksaan file secara lokal pada perangkat ini.</span></label><span>FFmpeg REQUIRED</span></div>
+        <button class="run-button" id="run-audit" type="submit"><span>Jalankan QC</span><span id="run-arrow">↗</span></button>
+        <div id="upload-status" role="status" aria-live="polite" class="upload-status"></div>
+      </form>
+    </div>
+    <div class="result-panel" id="result-panel">
+      <div class="result-head"><span>OUTPUT / TEKNIS</span><span id="result-badge" class="result-badge">NO RUN YET</span></div>
+      <div id="empty-results" class="result-empty"><div class="scan-graphic"><div class="scan-lines"></div><div class="scan-cross">+</div></div><p class="result-empty-title">Menunggu pemeriksaan pertama</p><p>Setelah analisis, temuan teknis dan tindakan yang disarankan muncul di sini. Bukan skor viralitas.</p></div>
+      <div id="full-results" hidden><div class="result-overview"><div id="result-poster" class="result-poster"></div><div><p class="eyebrow">FILE TERPERIKSA</p><h3 id="result-filename"></h3><p id="result-meta" class="muted"></p><div id="result-score" class="result-score"></div></div></div><div class="result-checks" id="result-checks"></div><div class="result-actions"><a id="download-json" download="audit.json" href="#">Unduh JSON <span>↗</span></a><a id="download-html" download="audit.html" href="#">Laporan HTML <span>↗</span></a></div><div class="result-notice">Hasil adalah pemeriksaan teknis heuristik; editor tetap perlu menilai cerita, hak cipta, caption, dan hasil visual secara manual.</div></div>
+    </div>
+  </div>
+  <div class="history-heading"><h3>Riwayat lokal</h3><span id="history-count">0 REPORTS</span></div><div id="history" class="history"><p class="empty-history">Belum ada laporan di perangkat ini.</p></div>
+</section>
+<section class="how section" id="workflow">
+  <div class="section-kicker"><span>02 / RELEASE FLOW</span><span>NO BLACK BOX</span></div>
+  <div class="section-head"><h2>Dari file ke keputusan.<br><span>Bisa diaudit ulang.</span></h2><p>Tiga langkah yang benar-benar bekerja pada versi ini. Penerbitan ke platform tetap di tanganmu.</p></div>
+  <div class="steps"><article><span class="step-no">01</span><div class="step-art step-art-one"><span>MP4</span><span>25 FPS</span><span>H.264</span></div><h3>Inspeksi file</h3><p>FFprobe membaca struktur media, resolusi, durasi, frame rate, dan codec.</p></article><article><span class="step-no">02</span><div class="step-art step-art-two"><div class="waveform"></div><span>−16 LUFS</span></div><h3>Deteksi masalah</h3><p>FFmpeg memeriksa loudness, peak audio, frame hitam, dan segmen beku. Temuan bisa jadi disengaja.</p></article><article><span class="step-no">03</span><div class="step-art step-art-three"><span class="stamp">RELEASE<br>REPORT ✓</span></div><h3>Buktikan hasil</h3><p>Ekspor JSON dan laporan HTML portabel dengan fingerprint SHA-256. Cocok untuk review tim.</p></article></div>
+</section>
+<section class="open-source section" id="open-source"><div class="open-copy"><div class="section-kicker"><span>03 / OPEN SOURCE</span><span>APACHE-2.0</span></div><h2>Kode terbuka.<br><span>Bukan data kamu.</span></h2><p>Core Release Lab dapat digunakan, diaudit, diubah, dan di-host sendiri. Tidak ada tracking tersembunyi. Kamu mengontrol berkas dan riwayat analisis.</p><p class="source-note">Untuk pengguna teknis: sumber lengkap, Dockerfile, CLI, dokumentasi, dan pengujian disediakan dalam paket rilis. Publikasi repositori GitHub perlu diverifikasi terpisah.</p><a class="secondary-action" href="#pricing">Lihat pilihan penggunaan <span>↗</span></a></div><div class="terminal" aria-label="Contoh penggunaan CLI"><div class="terminal-top"><span>TERMINAL · QUICK START</span><span>● ● ●</span></div><pre><code><span class="prompt">$</span> pip install -e '.[web]'
+<span class="prompt">$</span> releaselab doctor
+<span class="okay">✓</span> ffmpeg available
+<span class="okay">✓</span> ffprobe available
+
+<span class="prompt">$</span> releaselab audit video.mp4
+<span class="okay">✓</span> release-report/audit.json
+<span class="okay">✓</span> release-report/audit.html
+
+<span class="prompt">$</span> releaselab serve
+<span class="comment"># http://127.0.0.1:7860</span></code></pre><div class="terminal-footer">VIDEO NEVER LEAVES YOUR MACHINE</div></div></section>
+<section class="pricing section" id="pricing"><div class="section-kicker"><span>04 / OWNERSHIP & HOSTING</span><span>NO SURPRISE BILLING</span></div><div class="section-head"><h2>Pakai sendiri. <span>Atau dikelola.</span></h2><p>Core open source tersedia sekarang. Paket cloud berbayar adalah rencana early access, belum membuka pembayaran otomatis.</p></div><div class="pricing-grid"><article class="pricing-card free"><div class="plan-top"><span>SELF-HOSTED</span><span>AVAILABLE</span></div><h3>Community</h3><div class="price">Rp0 <small>/ selamanya</small></div><p>Untuk kreator dan developer yang ingin kontrol penuh.</p><ul><li>QC video lokal, tanpa akun</li><li>CLI + browser dashboard</li><li>JSON + laporan HTML</li><li>Riwayat SQLite lokal</li><li>Kode Apache-2.0</li></ul><a href="#lab" class="plan-action">Gunakan gratis <span>↗</span></a></article><article class="pricing-card paid"><div class="plan-top"><span>HOSTED / PRO</span><span>PROPOSED</span></div><h3>Creator Cloud</h3><div class="price">Rp149rb <small>/ bulan*</small></div><p>Usulan untuk kreator yang tidak ingin mengelola server.</p><ul><li>Semua kemampuan Community</li><li>Penyimpanan laporan terenkripsi</li><li>Antrean pemrosesan dengan batas kuota</li><li>Riwayat lintas perangkat</li><li>Notifikasi pemeriksaan</li></ul><button type="button" class="plan-action paid-action waitlist-open" data-plan="creator_cloud">Minta akses awal <span>↗</span></button></article><article class="pricing-card"><div class="plan-top"><span>HOSTED / TEAM</span><span>PROPOSED</span></div><h3>Studio Workspace</h3><div class="price">Rp499rb <small>/ bulan*</small></div><p>Usulan untuk studio kecil dengan kebutuhan review bersama.</p><ul><li>Semua kemampuan Creator Cloud</li><li>Persetujuan oleh reviewer</li><li>Versioned release checklist</li><li>Peran tim dan log audit</li><li>Prioritas dukungan</li></ul><button type="button" class="plan-action waitlist-open" data-plan="studio_workspace">Daftar minat studio <span>↗</span></button></article></div><p class="pricing-disclaimer">* Harga adalah hipotesis produk untuk validasi permintaan, bukan penawaran layanan aktif atau langganan yang sudah dapat ditagih. Belum ada recurring billing otomatis, fitur cloud, atau jaminan slot.</p></section>
+<dialog id="waitlist-dialog" class="waitlist-dialog" aria-labelledby="waitlist-title">
+  <form id="waitlist-form"><div class="dialog-header"><span>AIWALLET / EARLY ACCESS</span><button type="button" id="close-waitlist" aria-label="Tutup formulir">×</button></div>
+  <h2 id="waitlist-title">Tertarik memakai layanan cloud?</h2><p>Daftarkan minat. Belum ada penagihan dan tidak ada langganan otomatis.</p>
+  <label>Nama kontak<input type="text" name="name" autocomplete="name" minlength="2" maxlength="100" required placeholder="Nama kamu"></label>
+  <label>Email aktif<input type="email" name="email" autocomplete="email" maxlength="254" required placeholder="nama@contoh.com"></label>
+  <label>Rencana paket<select name="plan" id="waitlist-plan"><option value="creator_cloud">Creator Cloud (rencana Rp149rb/bulan)</option><option value="studio_workspace">Studio Workspace (rencana Rp499rb/bulan)</option></select></label>
+  <label class="hidden-honey" aria-hidden="true">Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+  <label class="waitlist-consent"><input type="checkbox" name="consent" required><span>Setuju menerima email mengenai AIWallet Release Lab. Ini bukan persetujuan membayar. Data dapat diminta untuk dihapus melalui email kontak.</span></label>
+  <button type="submit" id="send-waitlist" class="run-button">Catat minat akses awal <span>↗</span></button><div id="waitlist-status" role="status" aria-live="polite"></div>
+  </form></dialog>
+<section class="closing"><span class="eyebrow">KEEP THE CREATIVE WORK. CHECK THE TECHNICAL PART.</span><h2>Jangan tebak.<br><em>Periksa.</em></h2><a href="#lab">Audit video pertama <span>↗</span></a></section>
+</main>
+<footer><div class="footer-brand">a.<span> AIWALLET / RELEASE LAB</span></div><div><span>Apache-2.0 · Local-first · v0.1</span><span>Bukan aplikasi resmi Instagram, TikTok, atau YouTube.</span></div><a href="mailto:muhammadzakyasshidqy@gmail.com">Kontak ↗</a></footer>
+</div>
+</body></html>
