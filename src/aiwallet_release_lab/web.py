@@ -13,10 +13,11 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import FastAPI, File, HTTPException, UploadFile, Request
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse, Response
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from .report import render_html
+from .markers import extract_markers, markers_csv
 from fastapi.staticfiles import StaticFiles
 
 from . import __version__
@@ -137,6 +138,19 @@ def create_app(data_dir: Path | None = None, *, max_bytes: int = MAX_FILE_BYTES)
         html = render_html(data, poster if poster.is_file() else None)
         return HTMLResponse(html, headers={"Content-Disposition": "attachment; filename=release-report.html",
                                            "Cache-Control": "private, no-store"})
+
+    @api.get("/api/reports/{id_}/markers.csv")
+    def download_markers(id_: str):
+        if not re.fullmatch(r"[0-9a-f]{32}", id_):
+            raise HTTPException(404, "Report not found")
+        report = store.get(id_)
+        if report is None:
+            raise HTTPException(404, "Report not found")
+        result = extract_markers(report)
+        return Response(markers_csv(result), media_type="text/csv; charset=utf-8", headers={
+            "Content-Disposition": "attachment; filename=release-markers.csv",
+            "Cache-Control": "private, no-store",
+        })
 
     @api.delete("/api/reports/{id_}")
     def delete_report(id_: str):

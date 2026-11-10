@@ -15,7 +15,7 @@
 - [x] All repository files, tests, documentation and CI configuration prepared.
 - [ ] GitHub code push accepted and public repository URL verified.
 - [ ] README instructions tested on fresh independent machine.
-- [ ] GitHub Actions green and release tag/v0.4.0 published.
+- [ ] GitHub Actions green and release tag/v0.5.0 published.
 - [ ] README screenshot made from actual loaded browser UI (browser access unavailable in this environment).
 
 ## SaaS / subscription
@@ -36,3 +36,12 @@ These unchecked gates prevent an honest claim of public release or live paid sub
 - [x] Reproducibility CLI returns exit 3 for mismatches/tampering.
 - [x] 54 test cases passed locally with FFmpeg 7.1.5 on Python 3.13.
 - [ ] macOS/Windows CI and GitHub release remain unverified.
+
+## v0.5 release gate
+
+- [x] Generic CSV and JSON timecoded event markers tested against real FFmpeg receipts.
+- [x] CSV formula injection protection and bounded invalid-input rejection.
+- [x] Local dashboard marker CSV download.
+- [x] Report Explorer DOM tested at 1440×900 and 390×844 using local HTML/CSS/JS; marker CSV exported in browser, malicious receipt names did not generate markup, no JavaScript errors or document overflow.
+- [ ] GitHub source and Actions CI must be verified separately; do not claim green CI.
+- [ ] Video quality, copyright, and social-platform posting are not certified by technical QC.

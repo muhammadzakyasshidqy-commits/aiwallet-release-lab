@@ -10,6 +10,7 @@ from .core import AuditError, audit_video, make_poster, _binary
 from . import __version__
 from .report import save_report
 from .workflow import audit_batch, compare_reports, gate_report, verify_receipt
+from .markers import markers_from_file, markers_csv
 from .policy import read_policy
 
 
@@ -40,6 +41,10 @@ def main(argv: list[str] | None = None) -> int:
     compare.add_argument("after")
     compare.add_argument("--quick", action="store_true")
     compare.add_argument("--output", "-o")
+    markers = sub.add_parser("markers", help="Ekspor timecoded QC markers dari receipt (CSV atau JSON)")
+    markers.add_argument("receipt", help="audit.json dari Release Lab")
+    markers.add_argument("--output", "-o", help="Opsional: path CSV/JSON, atau stdout jika tidak ada")
+    markers.add_argument("--format", choices=("csv", "json"), default="csv")
     verify = sub.add_parser("verify", help="Uji ulang receipt JSON terhadap video asli")
     verify.add_argument("video")
     verify.add_argument("report")
@@ -75,6 +80,18 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps({"path": str(Path(args.output) / "manifest.json"),
                               "summary": manifest["summary"]}, ensure_ascii=False))
             return 3 if manifest["summary"]["blocked"] else 0
+        if args.command == "markers":
+            parsed = markers_from_file(args.receipt)
+            output = markers_csv(parsed) if args.format == "csv" else json.dumps(parsed, indent=2, ensure_ascii=False) + "\n"
+            if args.output:
+                destination = Path(args.output)
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                destination.write_text(output, encoding="utf-8", newline="")
+            else:
+                sys.stdout.write(output)
+            if not parsed["scan_complete"]:
+                print("Warning: source receipt has incomplete technical scan coverage.", file=sys.stderr)
+            return 0
         if args.command == "compare":
             report = compare_reports(audit_video(args.before, quick=args.quick),
                                      audit_video(args.after, quick=args.quick))

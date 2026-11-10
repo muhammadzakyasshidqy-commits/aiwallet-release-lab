@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=70,<81", "wheel>=0.42,<1"]
+requires = ["setuptools>=70,<83", "wheel>=0.42,<1"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "aiwallet-release-lab"
-version = "0.4.0"
+version = "0.5.0"
 description = "Local-first, explainable QC and release reports for vertical video."
 readme = "README.md"
 requires-python = ">=3.11"

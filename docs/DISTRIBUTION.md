@@ -11,7 +11,7 @@ Closest competing tools include general FFmpeg scripts, editors, full scheduling
 ## Distribution acceptance
 
 1. Publish the **actual** Apache-2.0 source tree and policy file to a dedicated, public GitHub repository with `contents:write` permission. Confirm exact owner/repo and public tree via readback. Do not confuse public ZIP downloads with a git repository.
-2. Add the already-bundled GitHub Actions matrix and a tagged `v0.4.0` release. Only describe CI as passed when the run has completed successfully.
+2. Add the already-bundled GitHub Actions matrix and a tagged `v0.5.0` release. Only describe CI as passed when the run has completed successfully.
 3. Publish two 90-second, real terminal screen recordings: one green result for an accepted export and one explainable blocked result with timestamp.
 4. Add step-by-step Windows, macOS and Linux setup instructions tested in **those** environments. Current local verification on Linux is not a Windows/macOS test.
 5. Open issue templates, label "good first issue", maintain security/privacy policies, and triage real issues. No scripted stars, comments, bot likes or fake testimonials.

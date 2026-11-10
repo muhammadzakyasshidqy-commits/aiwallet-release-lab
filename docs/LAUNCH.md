@@ -8,7 +8,7 @@
 - Description: `Local-first technical QC for Reels & Shorts: FFmpeg checks, loudness, frozen/black frames, portable HTML/JSON reports. Apache-2.0.`
 - Topics: `open-source`, `ffmpeg`, `video-quality-control`, `short-form-video`, `self-hosted`, `reels`, `shorts`, `creator-tools`, `local-first`, `python`
 - License: Apache-2.0 (already present)
-- Suggested initial tag: `v0.4.0`, **only after** the public repository actually contains this project and CI is green.
+- Suggested initial tag: `v0.5.0`, **only after** the public repository actually contains this project and CI is green.
 
 ## Show, don't assert
 

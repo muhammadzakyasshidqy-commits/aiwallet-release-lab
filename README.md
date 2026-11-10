@@ -4,13 +4,13 @@
 
 A creator can make a beautiful video and still upload an accidental 16:9 export, a silent file, an over-loud mix, an unsupported codec or a long unintended freeze. Release Lab inspects the *technical* side of a video, explains its findings, and produces a portable QA report. It does **not** generate views, rate creativity, scrape social networks, or publish on behalf of an account.
 
-**Status:** v0.4.0 alpha · Core available · Early-access interest form live · Hosted subscription and recurring checkout are not yet available.
+**Status:** v0.5.0 alpha · Core available · Early-access interest form live · Hosted subscription and recurring checkout are not yet available.
 
 ## What runs today
 
 - Local CLI + responsive browser-based workbench.
 - Optional self-contained Python **zipapp** for CLI usage on systems with Python + FFmpeg; the browser dashboard still requires FastAPI and Uvicorn.
-- **Batch export audit, CI release gate, revision comparisons**, and reports suitable for an editor/publisher handoff.
+- **Batch export audit, CI release gate, revision comparisons**, timecoded CSV markers, and reports suitable for an editor/publisher handoff.
 - Real FFprobe metadata: width, height, ratio, codec, FPS, duration, audio, interlacing.
 - Bounded FFmpeg scans: integrated loudness and true peak, black frames, frozen sections and audio silence with timecodes.
 - Detailed PASS / CHECK findings with caveats instead of an unexplained AI score.
@@ -23,12 +23,12 @@ A creator can make a beautiful video and still upload an accidental 16:9 export,
 
 ### Run without installing Python packages (CLI only)
 
-If you have Python 3.11+ and FFmpeg, use the portable `releaselab-0.4.0.pyz` artifact:
+If you have Python 3.11+ and FFmpeg, use the portable `releaselab-0.5.0.pyz` artifact:
 
 ```bash
-python releaselab-0.4.0.pyz doctor
-python releaselab-0.4.0.pyz audit video.mp4 --output ./report
-python releaselab-0.4.0.pyz batch ./exports --quick
+python releaselab-0.5.0.pyz doctor
+python releaselab-0.5.0.pyz audit video.mp4 --output ./report
+python releaselab-0.5.0.pyz batch ./exports --quick
 ```
 
 The packaged browser dashboard still requires `pip install -e '.[web]'` (FastAPI, Uvicorn); zipapp is intentionally a dependency-free CLI only.
@@ -98,6 +98,20 @@ Old receipts remain readable but cannot silently receive a current-version
 verification verdict. The optional policy must also pass. Full checks are
 bounded to the first 90 seconds; quick-only receipts are labeled metadata-only.
 See [verification documentation](docs/RECEIPT_VERIFICATION.md).
+
+### Timecoded issue markers and in-browser receipt explorer (v0.5)
+
+The local audit now exposes a **generic CSV export** of detected black, freeze and silence intervals, each with start/end timestamps, approximate frame positions, source name, and explicit caveats about unknown end times. CSV cells are escaped to protect spreadsheet readers against formula injection.
+
+```bash
+releaselab audit video.mp4 --output ./report
+releaselab markers ./report/audit.json --output ./review-markers.csv
+releaselab markers ./report/audit.json --format json --output ./review-markers.json
+```
+
+The browser workbench also offers a **CSV timecode** download for each saved report. Open the [Report Explorer](site/tools/receipt-explorer.html) to load your existing `audit.json` in browser memory, inspect timecoded events and export CSV without sending that file to AIWallet. The sample button loads only the explicitly public synthetic test JSON.
+
+These are **NLE-neutral markers**, not an EDL, an SMPTE drop-frame file, or a guaranteed Premiere/Resolve marker importer. `0 events` from a quick or truncated scan never means an error-free video. This is technical evidence, not subjective video scoring.
 
 ### A release policy for CI
 

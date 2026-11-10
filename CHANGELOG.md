@@ -1,3 +1,11 @@
+## 0.5.0 — 2026-11-10
+
+- Generic CSV/JSON timecoded black/freeze/silence markers from existing audit receipts without re-encoding.
+- `releaselab markers audit.json --output markers.csv` with bounded receipt parsing, timestamp validation and spreadsheet formula-escape.
+- Local FastAPI endpoint to download marker CSV from a saved audit, and dashboard timeline of measured defects.
+- Standalone Report Explorer: import an audit.json entirely in the browser, explore intervals and export CSV (no video/receipt upload).
+- No false claims of NLE-specific compatibility, drop-frame timecode, full-scan coverage, cloud subscriptions or GitHub status.
+
 ## 0.4.0 — 2026-11-10
 
 - Policy-adaptive black/freeze/silence detector thresholds, recorded in each receipt.

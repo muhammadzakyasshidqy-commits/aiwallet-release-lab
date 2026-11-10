@@ -8,6 +8,7 @@ from __future__ import annotations
 import hashlib
 import json
 import shutil
+import re
 import tomllib
 import zipfile
 from pathlib import Path
@@ -15,6 +16,13 @@ from pathlib import Path
 root = Path(__file__).resolve().parent
 version = tomllib.loads((root / 'pyproject.toml').read_text(encoding='utf8'))['project']['version']
 release_date = (2026, 11, 10, 0, 0, 0)
+test_proof = root / 'dist' / 'test-results.txt'
+if not test_proof.is_file():
+    raise SystemExit('Run pytest and save its stdout to dist/test-results.txt before building')
+proof_match = re.search(r'(\d+) passed(?:,| in)', test_proof.read_text(encoding='utf8'))
+if not proof_match:
+    raise SystemExit('No passing test count in dist/test-results.txt')
+tests_passed = int(proof_match.group(1))
 out = root / 'dist'
 site = root / 'site'
 site_rel = site / 'releases'
@@ -64,8 +72,9 @@ manifest={
     'version':version,
     'publish_date':'2026-11-10',
     'code_license':'Apache-2.0',
-    'verified_local_tests':54,
-    'test_environment':'Python 3.13.5 / Linux, FFmpeg 7.1.5',
+    'verified_local_tests':tests_passed,
+    'test_evidence_sha256':hashlib.sha256(test_proof.read_bytes()).hexdigest(),
+    'test_environment':'Python 3.13 / Linux, FFmpeg (local runtime)',
     'github_actions_verification':'NOT_VERIFIED',
     'github_source_repo_verification':'NOT_PUBLISHED',
     'subscription_payment_status':'NOT_ENABLED',

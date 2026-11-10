@@ -53,3 +53,15 @@ All items unchecked are *not yet implemented*.
 - [ ] GitHub source publishing and Actions verification (connector write access blocked).
 - [ ] Paid hosted tier, recurring billing, entitlement management (not shipped or charged).
 - [ ] Verified user traction and independent adoption.
+
+## v0.5 delivered
+- Local-first timecoded marker CSV/JSON and browser-only receipt inspection; no cloud video processing.
+- Next external validation: real editor workflows, Windows/macOS FFmpeg parity, signed reproducible artifacts, authorized GitHub source publication, and paid tenant isolation before subscription activation.
+
+## Next priority after v0.5
+
+- Win a useful wedge: map editor-marked quality issues back to timestamps and reduce false alerts with independent real-world video examples.
+- Validate timecode import contracts separately for Premiere, Resolve and other NLEs before advertising native integration.
+- Improve long-video scan coverage and cost limits without false pass.
+- Real GitHub canonical repository and cross-platform CI, then substantive contributions and adoption.
+- Hosted multi-tenant managed QC with auth, quotas and verified billing only after cost and privacy gates.

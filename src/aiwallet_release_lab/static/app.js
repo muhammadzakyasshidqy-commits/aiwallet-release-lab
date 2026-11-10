@@ -23,6 +23,17 @@ function showReport(id,result,poster){current={id,result};$('empty-results').hid
  const posterBox=$('result-poster');posterBox.replaceChildren();if(poster){const img=node('img');img.alt='Cuplikan pertama video terperiksa';img.src=poster;posterBox.appendChild(img)}else posterBox.textContent='NO PREVIEW';
  const checks=$('result-checks');checks.replaceChildren();for(const check of result.checks){const item=node('div','result-check '+check.level);item.append(node('span','',fmtLevel(check.level)));const content=node('div');content.append(node('h4','',check.title));content.append(node('p','',check.observation));content.append(node('p','',check.advice));item.append(content);checks.appendChild(item)}
  const jsonBlob=new Blob([JSON.stringify(result,null,2)],{type:'application/json'});const link=$('download-json');if(link.dataset.objectUrl)URL.revokeObjectURL(link.dataset.objectUrl);link.href=URL.createObjectURL(jsonBlob);link.dataset.objectUrl=link.href;
+ const timeline=$('marker-list');timeline.replaceChildren();
+ const measure=result.measurements||{}, raw=[];
+ for(const [key,label] of [['black_segments','BLACK'],['freeze_segments','FREEZE'],['silence_segments','SILENCE']]){
+  const entries=measure[key];if(!Array.isArray(entries))continue;
+  for(const x of entries){const start=Number(x.start);if(!Number.isFinite(start)||start<0)continue;raw.push({start,label,end:x.end})}
+ }
+ raw.sort((a,b)=>a.start-b.start||a.label.localeCompare(b.label));
+ for(const x of raw.slice(0,300)){const end=x.end===null?'END UNKNOWN':Number.isFinite(Number(x.end))?Number(x.end).toFixed(2)+'s':'END UNKNOWN';timeline.append(node('li','',x.label+'  '+x.start.toFixed(2)+'s → '+end))}
+ if(!raw.length)timeline.append(node('li','','Tidak ada segmen terdeteksi. Ini bukan bukti bebas masalah jika scan tidak lengkap.'));
+ setText('marker-coverage',(measure.analysis_seconds||0)+'s dianalisis dari '+result.metadata.duration_seconds+'s. '+(measure.limited_scan?'SCAN TERBATAS':'Scan hasil detektor tersedia; interpretasi tetap diperlukan.'));
+ $('download-markers').href='/api/reports/'+id+'/markers.csv';
  $('download-html').href='/api/reports/'+id+'/html';$('result-panel').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest'});
 }
 async function history(){try{const res=await fetch('/api/reports',{cache:'no-store'});if(!res.ok)throw new Error('History unavailable');const data=await res.json();const items=data.reports||[];setText('history-count',items.length+' REPORTS');const box=$('history');box.replaceChildren();if(!items.length){box.append(node('p','empty-history','Belum ada laporan di perangkat ini.'));return}

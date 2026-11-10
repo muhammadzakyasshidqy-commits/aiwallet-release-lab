@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="Baca receipt JSON video QC secara lokal di browser, lihat timecode temuan dan unduh CSV. Tidak ada unggahan file ke server.">
+<title>Receipt Explorer | AIWallet Release Lab</title>
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./receipt-explorer.css">
+<script src="./receipt-explorer.js" defer></script>
+</head>
+<body>
+<header class="topbar"><a class="wordmark" href="../"><span class="brandicon">a.</span><span>AIWALLET <strong>/ RELEASE LAB</strong></span></a><a class="back" href="../">Kembali ke produk <span aria-hidden="true">↗</span></a></header>
+<main id="main">
+  <div class="eyebrow"><span class="live-dot"></span> FREE TOOL / 05 — REPORT EXPLORER</div>
+  <div class="hero">
+    <div>
+      <h1>BUKTINYA<br><em>di timeline.</em></h1>
+      <p class="intro">Buka <code>audit.json</code>, lihat setiap temuan QC berdasarkan detik, lalu ekspor marker CSV untuk reviewer. Semua berkas yang kamu pilih diproses di browser ini, tanpa mengunggah video atau receipt ke AIWallet.</p>
+      <p class="muted">Tidak ada penilaian kreativitas, klaim sertifikasi platform, atau upload tersembunyi. Perkiraan nomor frame menggunakan FPS yang tercatat, bukan timecode SMPTE drop-frame.</p>
+    </div>
+    <div class="hero-stat" aria-hidden="true"><span>00</span><span class="separator">:</span><span>17</span><small>FILE → EVIDENCE</small></div>
+  </div>
+  <div class="utility-grid">
+    <section class="input-panel" aria-labelledby="open-title">
+      <div class="panel-head"><span>01 / BUKA LAPORAN</span><span>PRIVATE BY DEFAULT</span></div>
+      <h2 id="open-title">Pilih receipt.</h2>
+      <label class="dropzone" id="dropzone" tabindex="0" role="button">
+        <span class="upload-icon" aria-hidden="true">＋</span>
+        <strong>Taruh file audit.json</strong>
+        <span>atau klik untuk memilih file (maksimal 2 MiB)</span>
+        <input type="file" id="receipt-file" accept=".json,application/json" aria-label="Pilih receipt JSON">
+      </label>
+      <button class="sample" type="button" id="open-sample">Coba receipt sintetis <span aria-hidden="true">↗</span></button>
+      <div id="open-status" role="status" aria-live="polite" class="status">Belum ada laporan dipilih.</div>
+      <p class="privacy">Pembacaan lokal menggunakan File API. Hanya tombol contoh yang meminta berkas uji publik dari website; berkas milikmu tidak dikirim ke server.</p>
+    </section>
+    <section class="result-panel" aria-live="polite" aria-label="Ringkasan receipt">
+      <div class="panel-head"><span>02 / BUKTI TEKNIS</span><span id="read-state">NO RECEIPT</span></div>
+      <div class="filename" id="filename">Belum ada media</div>
+      <div class="metrics">
+        <div><strong id="duration">—</strong><small>DURASI</small></div>
+        <div><strong id="fps">—</strong><small>FPS</small></div>
+        <div><strong id="count">—</strong><small>SEGMEN</small></div>
+      </div>
+      <div class="coverage" id="coverage">Buka receipt untuk melihat cakupan inspeksi.</div>
+      <div class="stamp" id="quality-status">BELUM DIUJI</div>
+    </section>
+  </div>
+  <section class="timeline-section" aria-label="Timeline penanda waktu">
+    <div class="section-title"><div><span>03 / PENANDA WAKTU</span><h2>Yang perlu <em>diperiksa.</em></h2></div><button type="button" id="download-csv" class="download" disabled>Ekspor CSV <span aria-hidden="true">↗</span></button></div>
+    <p class="limitation" id="limitation">Tidak ada hasil yang bisa ditampilkan. Jika laporan hanya berisi metadata, daftar kosong tidak berarti tidak ada cacat teknis.</p>
+    <div class="timeline-scale" id="timeline-scale" aria-label="Distribusi waktu temuan"></div>
+    <div class="table-frame"><table><thead><tr><th>JENIS</th><th>MULAI</th><th>AKHIR</th><th>FRAME¹</th><th>CATATAN</th></tr></thead><tbody id="markers"><tr><td colspan="5">Pilih file untuk membaca timecode.</td></tr></tbody></table></div>
+    <small class="footnote">¹ Perkiraan frame berdasarkan FPS yang tercatat; bukan SMPTE drop-frame. CSV generik, bukan format impor khusus Premiere/Resolve.</small>
+  </section>
+  <section class="share-note"><div class="symbol">{ }</div><div><h2>Sumber terbuka. Bukti dapat diaudit.</h2><p>Receipt berisi pengamatan FFmpeg/FFprobe, bukan persetujuan kreatif. Jalankan <code>releaselab verify</code> terhadap video asli untuk memeriksa ulang pengukuran.</p></div><a href="../releases/aiwallet-release-lab-v0.5.0.zip">Source v0.5 ↗</a></section>
+</main>
+<footer><span>AIWALLET / RELEASE LAB</span><span>LOCAL JSON · NO VIDEO UPLOAD · APACHE-2.0</span><a href="../">Situs utama</a></footer>
+</body>
+</html>
