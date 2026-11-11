@@ -4,7 +4,7 @@
 
 A creator can make a beautiful video and still upload an accidental 16:9 export, a silent file, an over-loud mix, an unsupported codec or a long unintended freeze. Release Lab inspects the *technical* side of a video, explains its findings, and produces a portable QA report. It does **not** generate views, rate creativity, scrape social networks, or publish on behalf of an account.
 
-**Status:** v0.9.0 alpha · 100% free Apache-2.0 self-hosted core · Optional future managed hosting offered to customers. **No paid license, no required account, and no active recurring billing.**
+**Status:** v0.9.0 alpha · 100% free Apache-2.0 self-hosted core · Independent AIWallet Cloud beta is separate. **No paid license or account is required for Release Lab.**
 
 ## What runs today
 
@@ -168,13 +168,15 @@ Do not expose this alpha server publicly: **there is no multi-user authenticatio
 
 A CHECK result is not necessarily a bad video. This is **technical QA**, not a content moderation verdict or a promise of distribution performance.
 
-## Business model: free source + optional customer-managed subscriptions
+## Two independent products
 
-**The self-hosted application is free permanently.** It can be used privately, at a studio, in CI and for commercial work under the Apache-2.0 license, without a license key, paid seat, or cloud activation. Separately, AIWallet may offer its customers a hosted convenience service (cloud workspace, operations, support) for a proposed monthly fee. That hosted service is **not yet active**. No video has to be uploaded to use the free software.
+**AIWallet Release Lab (this repository)** is permanently free, open-source Apache-2.0 software. All FFmpeg audits, batch/CI gates, CLI tools, receipts and local dashboards run without an account, license purchase or Cloud subscription.
 
-A separate *optional* professional service may be quoted for a **one-time** setup, policy adaptation, FFmpeg integration or implementation help. A project quote must be agreed before any work. The software works without it. There is no checkout on this website, no automated charge and no renewal. No completed paid project is claimed.
+**AIWallet Cloud** is a separate commercial team workspace: https://aiwallet-cloud-studio.higgsfield.app/ . Its beta imports local QC JSON receipts, not raw video processing. Cloud pricing is proposed at Rp149.000/month Creator and Rp499.000/month Studio. Billing is not active; lead registration does not create a payment. The dedicated Cloud checkout is only visible once independently authorized by its merchant operator and is designed for one-month manual renewals, not automatic debits.
 
-There is an **optional, consent-based managed cloud interest form** on the public marketing site, separate from the local application. Signing up is not a purchase and does not enable a recurring charge. Creator Cloud (indicative Rp149.000/month) and Studio Workspace (indicative Rp499.000/month) are proposed customer prices, not expenses or subscriptions the AIWallet owner must buy. No email list is necessary to use the free core. Read [Business principles](docs/BUSINESS.md) and [GitHub publication](docs/GITHUB_LAUNCH.md).
+No Cloud service is required to run, host or modify Release Lab. An optional custom setup or consultation may be agreed through a separate one-time quote. No paid customer adoption is claimed.
+
+See [verified publication](docs/GITHUB_LAUNCH.md) and [Cloud billing readiness](docs/BILLING_READINESS.md).
 
 ## REST API (localhost only)
 
