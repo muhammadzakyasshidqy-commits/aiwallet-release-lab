@@ -37,7 +37,7 @@ for artifact in (wheel, zipapp, bundle):
 for file in site_rel.iterdir():
     if file.is_file():
         file.unlink()
-allowed_dirs = {'site','tests','src','docs','policies','cloud','examples','tools','.github','.agents'}
+allowed_dirs = {'site','tests','src','docs','policies','cloud','examples','tools','scripts','.github','.agents'}
 allowed_files = {
     'README.md','CHANGELOG.md','CODE_OF_CONDUCT.md','CONTRIBUTING.md','Dockerfile',
     'LICENSE','PRIVACY.md','SECURITY.md','pyproject.toml','compose.yaml',
@@ -61,6 +61,24 @@ with zipfile.ZipFile(source_zip,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
         z.writestr(info,path.read_bytes(),compress_type=zipfile.ZIP_DEFLATED,compresslevel=9)
 for path in (source_zip,zipapp,wheel,bundle):
     shutil.copyfile(path,site_rel/path.name)
+# A one-time, opt-in GitHub publishing launcher: it never stores OAuth credentials
+# and the release assets are accompanied by their cryptographic checksums.
+publisher = out / f'AIWallet_ReleaseLab_GitHub_Publisher_v{version}.zip'
+with zipfile.ZipFile(publisher,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
+    for rel in ('scripts/LAUNCH-GITHUB.cmd','scripts/Publish-GitHub.ps1'):
+        path=root/rel
+        info=zipfile.ZipInfo(Path(rel).name,release_date)
+        info.compress_type=zipfile.ZIP_DEFLATED
+        z.writestr(info,path.read_bytes())
+    for artifact in (source_zip,wheel,zipapp,bundle):
+        info=zipfile.ZipInfo('release-assets/'+artifact.name,release_date)
+        info.compress_type=zipfile.ZIP_DEFLATED
+        z.writestr(info,artifact.read_bytes())
+    text=''.join(f'{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}\n' for p in (source_zip,wheel,zipapp,bundle))
+    info=zipfile.ZipInfo('release-assets/SHA256SUMS.txt',release_date)
+    info.compress_type=zipfile.ZIP_DEFLATED
+    z.writestr(info,text.encode())
+shutil.copyfile(publisher,site_rel/publisher.name)
 artifacts=[]
 for path in sorted(site_rel.iterdir()):
     if not path.is_file():continue
@@ -77,8 +95,8 @@ manifest={
     'test_environment':'Python 3.13 / Linux, FFmpeg (local runtime)',
     'github_actions_verification':'NOT_VERIFIED',
     'github_source_repo_verification':'NOT_PUBLISHED',
-    'subscription_payment_status':'NOT_APPLICABLE_NO_RECURRING_BILLING',
-    'hosted_processing_status':'NOT_OFFERED',
+    'subscription_payment_status':'INTEREST_ONLY_NO_LIVE_BILLING',
+    'hosted_processing_status':'PLANNED_NOT_ACTIVE',
     'cloud_storage_of_user_video':False,
     'artifacts':artifacts,
 }
@@ -95,10 +113,10 @@ with zipfile.ZipFile(site_zip,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
             z.writestr(info,path.read_bytes(),compress_type=zipfile.ZIP_DEFLATED,compresslevel=9)
 all_zip = out / f'AIWallet_ReleaseLab_OpenCore_v{version}.zip'
 with zipfile.ZipFile(all_zip,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
-    for p in (source_zip,zipapp,wheel,bundle,site_zip):
+    for p in (source_zip,zipapp,wheel,bundle,publisher,site_zip):
         info=zipfile.ZipInfo(p.name,release_date)
         info.compress_type=zipfile.ZIP_DEFLATED
         info.external_attr=(0o644 << 16)
         z.writestr(info,p.read_bytes(),compress_type=zipfile.ZIP_DEFLATED,compresslevel=9)
-for p in (source_zip,zipapp,wheel,bundle,site_zip,all_zip):
+for p in (source_zip,zipapp,wheel,bundle,publisher,site_zip,all_zip):
     print(p.name,p.stat().st_size,hashlib.sha256(p.read_bytes()).hexdigest())

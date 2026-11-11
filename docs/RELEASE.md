@@ -1,13 +1,11 @@
-# v0.8 public release checklist
+# v0.9 public release checklist
 
-- [x] Apache-2.0 license present and no recurring billing/plan CTA in marketing or local UI.
-- [x] Portable CLI, wheel, local dashboard source, Render Watch and creative review.
-- [x] Synthetic FFmpeg fixture tests and local quality gate validation.
-- [x] Reproducible hash-verified source ZIP, wheel, pyz and Git bundle artifacts after build.
-- [ ] Independent Windows/macOS install and FFmpeg validation.
-- [ ] Dedicated public GitHub repository under authorized account and Actions CI green.
-- [ ] External editors' real beta feedback and objective error-rate metrics.
-
-**Not included:** recurring subscriptions, hosted uploads, cloud user authentication, paid tiers, fake GitHub stars or creativity scoring.
-
-Verification of public deployment and release URLs requires a separate HTTP download and SHA-256 check; building a ZIP or submitting deployment alone is insufficient.
+- [x] Free local Apache-2.0 functionality with no key, paywall or paid core license.
+- [x] Optional customer cloud interest is clearly marked as proposed, not billable.
+- [x] Local FFmpeg QC, Render Watch, batch, policy, editorial review and reports.
+- [x] Synthetic tests and local quality gates; verified source ZIP, wheel, zipapp and complete Git history bundle.
+- [x] GitHub one-click Windows publisher uses authorized browser-device login, exact target account, no force-push and verifiable release artifacts.
+- [ ] Dedicated public GitHub repository created and CI green (requires owner login to GitHub CLI).
+- [ ] Independent macOS and Windows FFmpeg install and performance tests.
+- [ ] Real editors' beta feedback; no fake stars or paid-customer claims.
+- [ ] Paid managed hosting only after separate customer consent and billing security acceptance.

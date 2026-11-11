@@ -1,3 +1,11 @@
+## 0.9.0 — 2026-11-11
+
+- Fixed CLI/software `__version__` drift relative to package version.
+- Clarified commercial distinction: forever-free Apache-2.0 self-hosted core and optional *customer* managed hosting (interest only, not yet billable).
+- Restored optional explicit-consent interest form to the **marketing site only**; local QC dashboard remains without cloud signup or tracking.
+- Added pinned-checksum Windows one-click GitHub publishing flow: owner logs in on GitHub's official website; repo/tag/assets/CI verified without force-push or handling credentials in chat.
+- No paid cloud operation or subscription was purchased by the product owner.
+
 # Changelog
 
 ## 0.8.0 — 2026-11-11

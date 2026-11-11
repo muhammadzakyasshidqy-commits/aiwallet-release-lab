@@ -1,5 +1,5 @@
-# Recurring billing retired
+# Billing readiness — not active
 
-The owner explicitly chose **no paid subscriptions** starting with v0.8.0. Creator Cloud and Studio Workspace monthly pricing proposals are withdrawn. This historical document name remains only so old links fail gracefully.
+Paid managed hosting to customers is allowed as an optional product. **v0.9.0 collects only nonbinding interest. No recurring billing is active.** The product owner must not buy a third-party subscription or incur charges through this workflow without separate approval.
 
-No recurring billing, tokenization, subscription API, SaaS plan/seat entitlements or payment-collection endpoint is part of Release Lab. The optional commercial path is a one-time scoped installation or integration service agreed separately.
+Recurring charges require a merchant account authorized for AIWallet, supported payment method/token, affirmative customer consent and agreement showing price/interval, signed and idempotently processed webhook events, tenant/entitlement mapping, cancellation, refunds, disputes, and monitoring. Do not activate charges from a waitlist entry. Midtrans recurring requires additional merchant approval in some channels; using credentials from unrelated products is prohibited without authorization.

@@ -33,7 +33,9 @@ def test_both_frontends_have_valid_internal_links():
 
 def test_static_website_does_not_claim_paid_product_is_running():
     src = (Path(__file__).parents[1]/'site'/'index.html').read_text('utf-8')
-    assert 'tidak ada paket bulanan' in src.lower()
+    assert 'paket ini masih dalam tahap minat awal' in src.lower()
+    assert 'Belum ada checkout' in src
+    assert 'id="managed-interest-form"' in src
     assert 'Bukan skor viralitas AI' in src
     assert 'synthetic-black-example.mp4' in src
     assert 'Apache-2.0' in src
@@ -46,5 +48,6 @@ def test_no_payment_credentials_or_tracking_scripts_in_static_site():
     assert '<script defer src="./app.js"></script>' in html
     assert 'stripe.com' not in js and 'midtrans' not in js
     assert 'google-analytics' not in js and 'analytics.js' not in js
-    assert 'aiwallet-release-interest' not in js
-    assert 'waitlist' not in js.lower()
+    assert 'aiwallet-release-interest' in js  # explicit opt-in only
+    assert 'payment_token' not in js and 'authorization' not in js.lower()
+    assert 'service_role' not in js

@@ -1,62 +1,44 @@
-// AIWallet Creator Cloud early-access interest collection.
-// This is NOT a subscription checkout. It must never grant paid entitlements.
-// Duplicate email never overwrites previous consent, selected plan or customer data.
-const ORIGIN = "*"; // Explicit user-submitted, public prospect form only. No credentials/cookies.
-const HEADERS = {
-  "access-control-allow-origin": ORIGIN,
-  "access-control-allow-methods": "GET,POST,OPTIONS",
-  "access-control-allow-headers": "Content-Type",
-  "x-content-type-options": "nosniff",
-  "referrer-policy": "no-referrer",
-  "cache-control": "no-store",
+// Optional customer managed-hosting interest. Free Apache-2.0 self-hosted core is unaffected.
+// NOT a payment/checkout endpoint. A registration does not authorize a charge.
+const headers={
+ "access-control-allow-origin":"*",
+ "access-control-allow-methods":"GET,POST,OPTIONS",
+ "access-control-allow-headers":"Content-Type",
+ "content-type":"application/json; charset=utf-8",
+ "cache-control":"no-store",
+ "x-content-type-options":"nosniff",
+ "referrer-policy":"no-referrer"
 };
-function reply(code: number, payload: Record<string,unknown>) {
-  return new Response(JSON.stringify(payload), {status: code, headers:{...HEADERS,"content-type":"application/json; charset=utf-8"}});
-}
-const plans = new Set(["creator_cloud", "studio_workspace"]);
-function clean(v: unknown, max: number): string {
-  if (typeof v !== "string") return "";
-  return v.trim().slice(0,max);
-}
-Deno.serve(async (request) => {
-  if (request.method === "OPTIONS") return new Response(null,{status:204,headers:HEADERS});
-  const url = new URL(request.url);
-  if (request.method === "GET") return reply(200,{
-    product:"AIWallet Release Lab",version:"0.2.0",status:"early_access_waitlist",
-    recurring_charges_live:false,paid_features_live:false,
-    prices_proposed_idr:{creator_cloud:149000,studio_workspace:499000},
-    data_policy:"Email and selected tier are used only to contact you about the service. For deletion requests contact the project maintainer."
-  });
-  if (request.method !== "POST" || url.pathname.endsWith("/health")) return reply(405,{error:"method_not_allowed"});
-  if (!(request.headers.get("content-type") || "").toLowerCase().includes("application/json")) return reply(415,{error:"json_required"});
-  const length = Number(request.headers.get("content-length")||0);
-  if (length > 2048) return reply(413,{error:"request_too_large"});
-  try {
-    const body = await request.text();
-    if (body.length > 2048) return reply(413,{error:"request_too_large"});
-    const obj = JSON.parse(body);
-    if (!obj || typeof obj !== "object" || Array.isArray(obj)) return reply(400,{error:"invalid_payload"});
-    if (clean(obj.website,250)) return reply(200,{ok:true}); // honeypot: do not save.
-    const name = clean(obj.name,100);
-    const email = clean(obj.email,254).toLowerCase();
-    const plan = clean(obj.plan,30);
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254 ||
-        name.length < 2 || !plans.has(plan) || obj.consent !== true) {
-      return reply(400,{error:"invalid_form",message:"Periksa email, nama, paket, dan persetujuan."});
-    }
-    const root = Deno.env.get("SUPABASE_URL");
-    const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    if (!root || !key) return reply(503,{error:"service_not_ready"});
-    const endpoint = root.replace(/\/$/,"") + "/rest/v1/aiwallet_release_interest?on_conflict=email";
-    const save = await fetch(endpoint, {
-      method:"POST",
-      headers:{Authorization:"Bearer "+key, apikey:key,"content-type":"application/json",
-               Prefer:"resolution=ignore-duplicates,return=minimal"},
-      body:JSON.stringify({name,email,plan,consent:true,source:"release_lab_v0_1",updated_at:new Date().toISOString()})
-    });
-    if (!save.ok) return reply(503,{error:"save_unavailable"});
-    return reply(201,{ok:true,message:"Minat akses awal tercatat. Ini bukan pembayaran atau aktivasi langganan."});
-  } catch {
-    return reply(400,{error:"invalid_json"});
-  }
+const respond=(status:number,data:Record<string,unknown>)=>new Response(JSON.stringify(data),{status,headers});
+const plans=new Set(["creator_cloud","studio_workspace"]);
+function clean(x:unknown,max:number){return typeof x==="string"?x.trim().slice(0,max):"";}
+Deno.serve(async(req:Request)=>{
+ if(req.method==="OPTIONS")return new Response(null,{status:204,headers});
+ if(req.method==="GET")return respond(200,{
+  product:"AIWallet Release Lab",version:"0.9-beta",
+  model:"Free Apache-2.0 self-hosted core + future optional managed subscriptions for customers",
+  owner_paid_subscription_required:false,
+  pricing_idr_per_month:{creator_cloud:149000,studio_workspace:499000},
+  billing_live:false,managed_cloud_available:false,interest_registration_live:true,
+  message:"Managed plans are proposals only. No purchase, trial, recurring charge or entitlement is created."
+ });
+ if(req.method!=="POST")return respond(405,{error:"method_not_allowed"});
+ if(!(req.headers.get("content-type")||"").toLowerCase().includes("application/json"))return respond(415,{error:"json_required"});
+ if(Number(req.headers.get("content-length")||0)>2048)return respond(413,{error:"request_too_large"});
+ try{
+  const raw=await req.text();if(raw.length>2048)return respond(413,{error:"request_too_large"});
+  const v=JSON.parse(raw);
+  if(!v||typeof v!=="object"||Array.isArray(v))return respond(400,{error:"invalid_payload"});
+  if(clean(v.website,250))return respond(202,{ok:true,message:"Permintaan diterima."});
+  const email=clean(v.email,254).toLowerCase(),name=clean(v.name,100),plan=clean(v.plan,35);
+  if(name.length<2||name.length>100||email.length>254||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!plans.has(plan)||v.consent!==true)
+   return respond(400,{error:"invalid_form",message:"Periksa nama, email, paket, dan persetujuan."});
+  const url=Deno.env.get("SUPABASE_URL"),key=Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if(!url||!key)return respond(503,{error:"service_not_ready"});
+  const target=url.replace(/\/$/,"")+"/rest/v1/aiwallet_release_interest?on_conflict=email";
+  const saved=await fetch(target,{method:"POST",headers:{Authorization:"Bearer "+key,apikey:key,"Content-Type":"application/json",Prefer:"resolution=ignore-duplicates,return=minimal"},
+   body:JSON.stringify({email,name,plan,consent:true,source:"release_lab_v09_managed_interest"})});
+  if(!saved.ok)return respond(503,{error:"save_unavailable"});
+  return respond(202,{ok:true,charged:false,managed_service_active:false,message:"Minat tercatat. Belum ada tagihan atau langganan aktif."});
+ }catch{return respond(400,{error:"invalid_json"});}
 });

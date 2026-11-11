@@ -1,6 +1,6 @@
 # Free and open-source launch brief
 
-The product is free Apache-2.0. GitHub publication and CI status must be verified before claiming a GitHub release. No paid subscription, auto-renewal or cloud signup is advertised.
+The product is free Apache-2.0. GitHub publication and CI status must be verified before claiming a GitHub release. The free source does not require a subscription. A separate planned customer-managed cloud offer has an opt-in interest form, but no checkout, active recurring billing or automatic renewal.
 
 ## Show an actual defect
 

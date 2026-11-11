@@ -4,7 +4,7 @@
 
 A creator can make a beautiful video and still upload an accidental 16:9 export, a silent file, an over-loud mix, an unsupported codec or a long unintended freeze. Release Lab inspects the *technical* side of a video, explains its findings, and produces a portable QA report. It does **not** generate views, rate creativity, scrape social networks, or publish on behalf of an account.
 
-**Status:** v0.8.0 alpha · 100% free/open-source core · No paid subscription, no recurring billing, no online account required.
+**Status:** v0.9.0 alpha · 100% free Apache-2.0 self-hosted core · Optional future managed hosting offered to customers. **No paid license, no required account, and no active recurring billing.**
 
 ## What runs today
 
@@ -24,12 +24,12 @@ A creator can make a beautiful video and still upload an accidental 16:9 export,
 
 ### Run without installing Python packages (CLI only)
 
-If you have Python 3.11+ and FFmpeg, use the portable `releaselab-0.7.0.pyz` artifact:
+If you have Python 3.11+ and FFmpeg, use the portable `releaselab-0.9.0.pyz` artifact:
 
 ```bash
-python releaselab-0.7.0.pyz doctor
-python releaselab-0.7.0.pyz audit video.mp4 --output ./report
-python releaselab-0.7.0.pyz batch ./exports --quick
+python releaselab-0.9.0.pyz doctor
+python releaselab-0.9.0.pyz audit video.mp4 --output ./report
+python releaselab-0.9.0.pyz batch ./exports --quick
 ```
 
 The packaged browser dashboard still requires `pip install -e '.[web]'` (FastAPI, Uvicorn); zipapp is intentionally a dependency-free CLI only.
@@ -168,13 +168,13 @@ Do not expose this alpha server publicly: **there is no multi-user authenticatio
 
 A CHECK result is not necessarily a bad video. This is **technical QA**, not a content moderation verdict or a promise of distribution performance.
 
-## Business model: free Apache-2.0 source, no subscription
+## Business model: free source + optional customer-managed subscriptions
 
-**The application is free permanently.** It can be used privately, at a studio, in CI and for commercial work under the Apache-2.0 license. We do not sell a monthly license, host user videos, or require accounts to unlock features.
+**The self-hosted application is free permanently.** It can be used privately, at a studio, in CI and for commercial work under the Apache-2.0 license, without a license key, paid seat, or cloud activation. Separately, AIWallet may offer its customers a hosted convenience service (cloud workspace, operations, support) for a proposed monthly fee. That hosted service is **not yet active**. No video has to be uploaded to use the free software.
 
 A separate *optional* professional service may be quoted for a **one-time** setup, policy adaptation, FFmpeg integration or implementation help. A project quote must be agreed before any work. The software works without it. There is no checkout on this website, no automated charge and no renewal. No completed paid project is claimed.
 
-There is **no paid SaaS waiting list**. A former interest endpoint has been retired; no email list is necessary to use the product. Read [Business principles](docs/BUSINESS.md) and [GitHub publication](docs/GITHUB_LAUNCH.md).
+There is an **optional, consent-based managed cloud interest form** on the public marketing site, separate from the local application. Signing up is not a purchase and does not enable a recurring charge. Creator Cloud (indicative Rp149.000/month) and Studio Workspace (indicative Rp499.000/month) are proposed customer prices, not expenses or subscriptions the AIWallet owner must buy. No email list is necessary to use the free core. Read [Business principles](docs/BUSINESS.md) and [GitHub publication](docs/GITHUB_LAUNCH.md).
 
 ## REST API (localhost only)
 
@@ -211,3 +211,7 @@ Tests synthesize MP4 files with FFmpeg and verify metadata inspection, real audi
 ## Open-source launch
 
 The source ZIP is a working release artifact, **not a verified GitHub publication**. See [GitHub launch instructions](docs/GITHUB_LAUNCH.md) for verified publication steps and the category growth scorecard.
+
+### GitHub publication without ChatGPT Work
+
+The Windows one-click `scripts/LAUNCH-GITHUB.cmd` uses the free GitHub CLI device login (the user authorizes only at github.com). After login it autonomously creates and pushes the new public repository, uploads verified release assets and checks GitHub Actions. It does not read browser cookies or copy tokens into chat. See [the launch guide](docs/GITHUB_LAUNCH.md). Until that authorized flow completes, this website distribution is not equivalent to a canonical GitHub release.

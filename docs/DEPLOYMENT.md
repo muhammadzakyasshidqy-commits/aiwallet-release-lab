@@ -11,7 +11,7 @@ Open-source core runs on the user device, not in the website runtime. Public dow
 
 ### Marketing website
 
-The site is static and does not upload users' video or use analytics tracking. Subscription plan prices and the prior interest form were retired in v0.8.0. Previous JSON waitlist endpoints are not part of the application.
+The site is static and does not upload users' video or use analytics tracking. The static marketing site offers an optional customer managed cloud interest form (no payments). Its Supabase backend stores explicit opt-in emails under RLS; the local core makes no calls to that service. Managed hosting and recurring billing are not implemented.
 
 ### GitHub
 

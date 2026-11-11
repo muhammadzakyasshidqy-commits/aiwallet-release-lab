@@ -1,18 +1,9 @@
-# Dedicated GitHub publication checklist (not yet complete)
+# GitHub publication — no ChatGPT Work required
 
-**Candidate repository:** `muhammadzakyasshidqy-commits/aiwallet-release-lab` (not claimed to exist). **Public site:** https://aiwallet-studio-qz.higgsfield.app/
+Target: `https://github.com/muhammadzakyasshidqy-commits/aiwallet-release-lab` (the repo does not yet exist unless verified live). The previous GitHub App connector has read but not Contents-write scope (403). Opening a social-account Chrome profile through Social Control cannot navigate GitHub because the operator restricts URLs to the registered social platform. Do not bypass this boundary or copy cookies/tokens/OTP.
 
-The installed GitHub connector reads the owner's existing repository but previously returned HTTP 403 `Resource not accessible by integration` on Content writes. An account login alone might not grant App **Contents: Read and write** permission. This permission must be granted explicitly to the connected GitHub App/repository. Do not share personal access tokens or passwords through chat.
+**One-click owner handoff:** From the published `AIWallet_GitHub_OneClick_v0.9.0.zip` package, extract to a user-chosen folder on Windows. Run `scripts/LAUNCH-GITHUB.cmd` and complete GitHub's official browser/device login under `muhammadzakyasshidqy-commits`. The script downloads a pinned SHA-256 GitHub CLI (if missing), verifies the packaged complete Git history, creates *only* the dedicated public repository, pushes `main` and all tags non-force, creates the GitHub release with source/wheel/zipapp/SHA256SUMS, queries public commit and waits for CI. It writes only nonsecret `PUBLISH_RESULT.json`. It does **not** upload your videos or log credentials.
 
-## Publish safely
+No payment, Railway, ChatGPT Work, subscription or access token pasted into chat is required. The one-time browser login is the unavoidable user interaction for a private GitHub account. The script cannot run as GitHub until you authorize it. If Git or gh auth is missing it stops or bootstraps the official free GitHub CLI. A release is not accepted until the public URL and Actions status have been verified.
 
-1. Authorize GitHub Contents-write for the new repository and create it under the owner's GitHub account, or connect a Browser session with an authenticated GitHub tab. Keep existing unrelated repos unchanged.
-2. Import `AIWallet_ReleaseLab_v0.8.0.git.bundle` (full Git history and tag) into an empty repository, or unzip the source ZIP into its root. **Never** publish test secrets, session cookies or user videos.
-3. Run `python -m pip install -e '.[web,dev]'` and `pytest -q`; check local FFmpeg and FFprobe versions.
-4. Verify Actions CI **on the canonical public repo**, across all supported Python versions. The local test result is not CI.
-5. Publish GitHub Release `v0.8.0` with source, Python wheel, portable CLI, SHA-256 file. Check each public download.
-6. Only then add GitHub URLs to the public website, announce in relevant communities with real demonstration and issues enabled.
-
-Release Lab is free Apache-2.0. **No recurring subscriptions or paid tiers.** Optional one-time services are outside the repository's free software license.
-
-Category ranking cannot be guaranteed and must be sourced from independent GitHub results, date, and exact scope. Do not automate fake stars, spam or fabricated testimonials.
+After publication, view CI on `https://github.com/muhammadzakyasshidqy-commits/aiwallet-release-lab/actions` and create a public issue only with real repro steps. No artificial stars, fork farms, spam, or fabricated ranking.
