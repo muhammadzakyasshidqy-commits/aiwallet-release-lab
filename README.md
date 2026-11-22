@@ -2,6 +2,8 @@
 
 **Local-first quality control for short-form video, with explainable checks and exportable release evidence.**
 
+**Need an independent release audit instead of running the tool yourself?** AIWallet Studio offers a **one-time audit of one video up to 60 seconds for Rp249.000** (technical FFmpeg checks, editorial review with timecodes, prioritized fixes; not full video editing). [Request an audit and see a real internal example](https://aiwallet-cloud-studio.higgsfield.app/#pilot). Confirm scope and pricing before any payment. The free, Apache-2.0 Release Lab below remains entirely independent.
+
 A creator can make a beautiful video and still upload an accidental 16:9 export, a silent file, an over-loud mix, an unsupported codec or a long unintended freeze. Release Lab inspects the *technical* side of a video, explains its findings, and produces a portable QA report. It does **not** generate views, rate creativity, scrape social networks, or publish on behalf of an account.
 
 **Status:** v0.9.0 alpha · 100% free Apache-2.0 self-hosted core · Independent AIWallet Cloud beta is separate. **No paid license or account is required for Release Lab.**
@@ -172,7 +174,7 @@ A CHECK result is not necessarily a bad video. This is **technical QA**, not a c
 
 **AIWallet Release Lab (this repository)** is permanently free, open-source Apache-2.0 software. All FFmpeg audits, batch/CI gates, CLI tools, receipts and local dashboards run without an account, license purchase or Cloud subscription.
 
-**AIWallet Cloud** is a separate commercial team workspace: https://aiwallet-cloud-studio.higgsfield.app/ . Its beta imports local QC JSON receipts, not raw video processing. Cloud pricing is proposed at Rp149.000/month Creator and Rp499.000/month Studio. Billing is not active; lead registration does not create a payment. The dedicated Cloud checkout is only visible once independently authorized by its merchant operator and is designed for one-month manual renewals, not automatic debits.
+**AIWallet Cloud** is a separate commercial team workspace: https://aiwallet-cloud-studio.higgsfield.app/ . Its beta imports local QC JSON receipts, not raw video processing. Cloud pricing is proposed at Rp149.000/month Creator and Rp499.000/month Studio. Cloud payment availability depends on provider readiness; submitting an inquiry does not create a payment. One-time services are separately quoted, and [AIWallet's public inquiry form](https://aiwallet-cloud-studio.higgsfield.app/#pilot) accepts consent-based contact requests directly on the hosted site. The dedicated Cloud checkout is only visible once independently authorized by its merchant operator and is designed for one-month manual renewals, not automatic debits.
 
 No Cloud service is required to run, host or modify Release Lab. An optional custom setup or consultation may be agreed through a separate one-time quote. No paid customer adoption is claimed.
 
@@ -206,13 +208,13 @@ Tests synthesize MP4 files with FFmpeg and verify metadata inspection, real audi
 - [Commercialization plan](docs/BUSINESS.md) · [Policy as Code](docs/POLICY_AS_CODE.md) · [Distribution](docs/DISTRIBUTION.md) · [Billing readiness](docs/BILLING_READINESS.md) · [Roadmap](docs/ROADMAP.md) · [Subscription design](docs/SUBSCRIPTION_CONTRACT.md) · [Release checklist](docs/RELEASE.md)
 - The standalone website in `site/` includes a synthetic MP4 test fixture, an authentic FFmpeg report, and an independently auditable BIMO technical report, but not the user-owned BIMO original or client footage. A local agent instruction skill is included in `.agents/skills/aiwallet-release-lab/`.
 - The project intentionally avoids mass-commenting, platform login circumvention and automated posting without explicit per-account authorization.
-- Current public marketing page and release downloads: https://aiwallet-studio-qz.higgsfield.app/ . **GitHub publication is not yet verified**, so do not mistake a ZIP release for a canonical GitHub repository.
+- Current public marketing page and release downloads: https://aiwallet-studio-qz.higgsfield.app/ . **This is the publicly accessible canonical GitHub repository** (verified in November 2026); users can inspect its source history and issues. A ZIP alone is not proof of any later code changes.
 
 **Maintainer:** AIWallet Studio · Tangerang, Indonesia. Project outreach: [email](mailto:muhammadzakyasshidqy@gmail.com).
 
 ## Open-source launch
 
-The source ZIP is a working release artifact, **not a verified GitHub publication**. See [GitHub launch instructions](docs/GITHUB_LAUNCH.md) for verified publication steps and the category growth scorecard.
+The public repository is the canonical source; standalone ZIP artifacts should be checked against their corresponding release and commit. See [GitHub launch instructions](docs/GITHUB_LAUNCH.md) for verified publication steps and the category growth scorecard.
 
 ### GitHub publication without ChatGPT Work
 
