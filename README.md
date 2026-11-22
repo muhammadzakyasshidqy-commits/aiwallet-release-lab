@@ -2,7 +2,7 @@
 
 **Local-first quality control for short-form video, with explainable checks and exportable release evidence.**
 
-**Need an independent release audit instead of running the tool yourself?** AIWallet Studio offers a **one-time audit of one video up to 60 seconds for Rp249.000** (technical FFmpeg checks, editorial review with timecodes, prioritized fixes; not full video editing). [Request an audit and see a real internal example](https://aiwallet-cloud-studio.higgsfield.app/#pilot). Confirm scope and pricing before any payment. The free, Apache-2.0 Release Lab below remains entirely independent.
+**Need an independent release audit instead of running the tool yourself?** AIWallet Studio offers a **one-time audit of one video up to 60 seconds for Rp249.000** (technical FFmpeg checks, editorial review with timecodes, prioritized fixes; not full video editing). [See the audit scope, real internal example, and request a quote](https://aiwallet-cloud-studio.higgsfield.app/audit-video-reels#pilot). Confirm scope and pricing before any payment. The free, Apache-2.0 Release Lab below remains entirely independent.
 
 A creator can make a beautiful video and still upload an accidental 16:9 export, a silent file, an over-loud mix, an unsupported codec or a long unintended freeze. Release Lab inspects the *technical* side of a video, explains its findings, and produces a portable QA report. It does **not** generate views, rate creativity, scrape social networks, or publish on behalf of an account.
 
