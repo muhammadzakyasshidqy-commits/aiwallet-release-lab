@@ -6,6 +6,8 @@
 
 A creator can make a beautiful video and still upload an accidental 16:9 export, a silent file, an over-loud mix, an unsupported codec or a long unintended freeze. Release Lab inspects the *technical* side of a video, explains its findings, and produces a portable QA report. It does **not** generate views, rate creativity, scrape social networks, or publish on behalf of an account.
 
+**Just checking a 9:16 export?** Try the [free, local-browser video ratio and duration checker](https://muhammadzakyasshidqy-commits.github.io/aiwallet-studio-qz-2026/cek-video-9x16.html). It reads metadata without uploading the video and is not a replacement for FFmpeg scan, soundtrack QC or human editorial review.
+
 **Status:** v0.9.0 alpha · 100% free Apache-2.0 self-hosted core · Independent AIWallet Cloud beta is separate. **No paid license or account is required for Release Lab.**
 
 ## What runs today
